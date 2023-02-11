@@ -1,0 +1,22 @@
+.root {
+  display: flex;
+  flex-direction: column;
+}
+
+.menuButton {
+  margin-left: 30px;
+  row-gap: 20px;
+  column-gap: 20px;
+}
+
+.title {
+  flex-grow: 1;
+}
+
+.list {
+  width: 250px;
+}
+
+.drawerBtnClose {
+  justify-content: flex-end !important;
+}

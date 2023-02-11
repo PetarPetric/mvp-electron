@@ -1,0 +1,31 @@
+.astal {
+  width: 6rem;
+  height: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+}
+.astal:hover {
+  cursor: pointer;
+  background-color: gray;
+  opacity: 0.9;
+}
+
+.astal-dostava {
+  position: absolute;
+  top: -7rem;
+  right: -8rem;
+}
+
+.astal-sank {
+  position: absolute;
+  top: -7rem;
+  left: 1rem;
+}
+
+.astal-napolje {
+  position: absolute;
+  bottom: -7rem;
+  margin: 0 2rem;
+}

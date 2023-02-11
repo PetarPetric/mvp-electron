@@ -1,0 +1,60 @@
+.lokal {
+  width: 60%;
+  height: 100%;
+  margin: auto;
+  position: relative;
+}
+.lokal-unutra {
+  position: relative;
+  padding: 2rem;
+  display: grid;
+  height: 300px;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 20px;
+  grid-row-gap: 20px;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+}
+
+.lokal-unutra::after {
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  content: "";
+  background: #fff;
+  width: 100px;
+  height: 5px;
+}
+
+.sank {
+  height: 8rem;
+  border-bottom: 2px solid black;
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+  position: relative;
+}
+
+.sank-pizza {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 50px;
+  height: 50px;
+}
+
+.sank:after {
+  position: absolute;
+  bottom: -3px;
+  left: 50%;
+  transform: translateX(-50%);
+  content: "";
+  background: #fff;
+  width: 100px;
+  height: 5px;
+}
+
+.lokal-unutra > div:nth-child(even) {
+  justify-self: right;
+}
