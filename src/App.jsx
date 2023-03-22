@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { setDatabase } from "./services/dataservice";
 import { Outlet, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-// import { getTipProizvoda } from "./services/dataservice";
 
 import {
   AppBar,
@@ -16,16 +16,11 @@ import {
 } from "@mui/material";
 
 import "../src/styles/App.css";
+setDatabase();
 
-const App = () => {
+const App = ({ children }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-
-  // useEffect(() => {
-  //   getTipProizvoda().then((res) => {
-  //     console.log(res);
-  //   });
-  // }, []);
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -80,6 +75,14 @@ const App = () => {
               }}
             >
               <ListItemText primary="Roba" />
+            </ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                navigate("/izvestaji");
+                setOpen(false);
+              }}
+            >
+              <ListItemText primary="Izvestaji" />
             </ListItemButton>
           </List>
         </div>

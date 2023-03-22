@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const ErrorPage = () => {
   return (
     <div style={styles.container}>
-      <Link to="/stolovi" style={styles.link}>
+      <Link to="/" style={styles.link}>
         Stolovi
       </Link>
       <h1 style={styles.header}>Stranica ne postoji...</h1>

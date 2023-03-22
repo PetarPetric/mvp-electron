@@ -7,7 +7,11 @@ export default function SingleAstalView(props) {
 
   return (
     <div
-      onClick={() => navigate(`/stolovi/${props.table.id}`)}
+      onClick={() =>
+        navigate(`/stolovi/${props.table.id}/`, {
+          state: { table: props.table },
+        })
+      }
       className={`astal ${
         props.table.description === "dostava" && "astal-dostava"
       } ${props.table.description === "sank" && "astal-sank"} ${

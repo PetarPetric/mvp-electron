@@ -2,19 +2,18 @@ import React from "react";
 import SingleAstal from "../components/AstalComponent";
 import "../styles/StoloviView.css";
 import pizzaSlika from "../assets/pizza-svgrepo-com.svg";
-
-const tables = [
-  { title: "1", id: 1, description: "unutra" },
-  { title: "2", id: 2, description: "unutra" },
-  { title: "3", id: 3, description: "unutra" },
-  { title: "4", id: 4, description: "unutra" },
-  { title: "Dostava", id: 5, description: "dostava" },
-  { title: "Sank", id: 6, description: "sank" },
-  { title: "5", id: 7, description: "napolje" },
-  { title: "6", id: 8, description: "napolje" },
-];
+import { db } from "../services/dataservice";
+import { useState, useEffect } from "react";
 
 export default function StoloviView() {
+  const [tables, setTables] = useState([]);
+
+  useEffect(() => {
+    db.getStolovi().then((res) => {
+      setTables(res);
+    });
+  }, []);
+
   return (
     <div>
       <div className="lokal">
@@ -25,7 +24,7 @@ export default function StoloviView() {
         </div>
         <div className="lokal-unutra">
           {tables.map((table) => (
-            <SingleAstal table={table} key={table.id} />
+            <SingleAstal key={table.id} table={table} />
           ))}
         </div>
         <div className="napolje"></div>

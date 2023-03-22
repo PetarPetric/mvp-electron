@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { db } from "../services/dataservice";
 import {
   Button,
   Table,
@@ -12,23 +13,74 @@ import {
   MenuItem,
   Select,
   InputLabel,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 function RobaView() {
   const navigate = useNavigate();
   const [artikalId, setArtikalId] = useState("");
+  const [artikliToShow, setArtikliToShow] = useState([]);
+  const [tipoviProizvoda, setTipoviProizvoda] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [selectedArtikal, setSelectedArtikal] = useState("");
 
   useEffect(() => {
-    console.log("first load");
+    Promise.all([db.getAllArtikli(), db.getTipProizvoda()]).then((res) => {
+      setArtikliToShow(res[0]);
+      setTipoviProizvoda(res[1]);
+    });
   }, []);
 
   const handleChange = (event) => {
     setArtikalId(event.target.value);
+    db.getArtikalById(event.target.value).then((res) => {
+      setArtikliToShow(res);
+    });
   };
 
   return (
     <>
+      <Dialog
+        onClose={() => {
+          setOpen(false);
+        }}
+        open={open}
+      >
+        <DialogTitle>Brisanje artikla</DialogTitle>
+        <DialogContent>
+          Da li ste sigurni da zelite da obrisete artikal?
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color="info"
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            Ne
+          </Button>
+          <Button
+            color="error"
+            variant="contained"
+            onClick={() => {
+              db.deleteArtikal(selectedArtikal.id).then(() => {
+                db.getAllArtikli().then((res) => {
+                  setArtikliToShow(res);
+                });
+                setOpen(false);
+              });
+            }}
+          >
+            Da
+          </Button>
+        </DialogActions>
+      </Dialog>
       <div style={styles.dugmici}>
         <Button
           variant="contained"
@@ -53,33 +105,69 @@ function RobaView() {
             <InputLabel id="izbor tabele">Prikazi vrstu robe</InputLabel>
             <Select
               labelId="izbor-tabele"
-              id="demo-simple-select"
+              id="izbor-tabele"
               value={artikalId}
-              label="Izbor proizvoda"
+              label="Prikazi vrstu robe"
               onChange={(e) => {
                 handleChange(e);
               }}
             >
-              <MenuItem value={1}>Prikazi komadno</MenuItem>
-              <MenuItem value={2}>Prikazi robu na kilo</MenuItem>
-              <MenuItem value={3}>Prikazi hranu</MenuItem>
+              {tipoviProizvoda.map((tipProizvoda) => (
+                <MenuItem value={tipProizvoda.id} key={tipProizvoda.id}>
+                  {tipProizvoda.name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </Box>
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell align="center">No.</TableCell>
               <TableCell align="center">Ime</TableCell>
-              <TableCell align="center">Cena</TableCell>
               <TableCell align="center">Kolicina</TableCell>
+              <TableCell align="center">Cena</TableCell>
+              <TableCell align="center">Opcije</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow>
-              <TableCell align="center">Ime</TableCell>
-              <TableCell align="center">Cena</TableCell>
-              <TableCell align="center">Kolicina</TableCell>
-            </TableRow>
+            {artikliToShow.map((artikal, index) => (
+              <TableRow key={artikal.id}>
+                <TableCell align="center">{index + 1}</TableCell>
+                <TableCell align="center">{artikal.name}</TableCell>
+                <TableCell align="center">
+                  {artikal.tipProizvoda_id == 3 ? "Jelo" : artikal.kolicina}
+                </TableCell>
+                <TableCell align="center">
+                  {artikal.cena || "Sastojak nema cenu"}
+                </TableCell>
+                <TableCell align="center">
+                  <Button
+                    size="small"
+                    color="info"
+                    style={{ marginRight: "1rem" }}
+                    variant="contained"
+                    onClick={() => {
+                      setSelectedArtikal(artikal);
+                      navigate(`/izmena-proizvoda/${artikal.id}`);
+                    }}
+                  >
+                    <EditIcon style={{ width: "20px" }} />
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="error"
+                    onClick={() => {
+                      setSelectedArtikal(artikal);
+                      setOpen(true);
+                    }}
+                  >
+                    <DeleteIcon style={{ width: "20px" }} />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </Paper>
@@ -105,90 +193,3 @@ const styles = {
 };
 
 export default RobaView;
-
-// name: "RobaView",
-// components: {
-// IonPage,
-// IonContent,
-// IonButton,
-// IonItem,
-// IonRow,
-// IonCol,
-// IonGrid,
-// IonSelect,
-// IonSelectOption,
-// napraviArtikal,
-// dodavanjeProizvoda,
-// },
-// setup() {
-// const router = useRouter();
-// const isModalOpen = ref(false);
-// const tipDodavanja = ref("");
-// const proizvodi = ref<any>([]);
-// const artikalId = ref(1);
-//
-// const komadnoIlikilo = computed(() => {
-// if (artikalId.value === 1) {
-// return "kom";
-// } else if (artikalId.value === 2) {
-// return "g";
-// } else {
-// return "";
-// }
-// });
-//
-// onBeforeMount(async () => {
-// proizvodi.value = await getArtikalById(artikalId.value);
-// });
-//
-// const showArtikal = async (id: number) => {
-// proizvodi.value = await getArtikalById(id);
-// };
-//
-// const openModal = (arg: string) => {
-// isModalOpen.value = true;
-// tipDodavanja.value = arg;
-// };
-//
-// const presentToast = async () => {
-// const toast = await toastController.create({
-// message: "Proizvod uspesno dodat!",
-// duration: 1500,
-// position: "top",
-// });
-//
-// await toast.present();
-// };
-//
-// const closeModal = () => {
-// tipDodavanja.value = "";
-// isModalOpen.value = false;
-// };
-//
-// const dodatProizvod = async () => {
-// isModalOpen.value = false;
-// tipDodavanja.value = "";
-// await presentToast();
-// artikalId.value = 1;
-// proizvodi.value = await getArtikalById(artikalId.value);
-// };
-//
-// return {
-// router,
-// isModalOpen,
-// openModal,
-// tipDodavanja,
-// dodatProizvod,
-// showArtikal,
-// proizvodi,
-// artikalId,
-// komadnoIlikilo,
-// closeModal,
-// };
-// },
-{
-  /* }); */
-}
-{
-  /* </script> */
-}
