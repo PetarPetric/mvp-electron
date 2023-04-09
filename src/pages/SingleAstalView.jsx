@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useParams, useLocation } from "react-router-dom";
 import DodavanjeNaStoComponenta from "../components/DodavanjeProizvodaComponent";
 import KucaniProizvodi from "../components/KucaniProizvodi";
+import NaplataComponent from "../components/NaplatiComponent";
+import StornoComponent from "../components/StornoComponent";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
@@ -56,7 +58,7 @@ function SingleAstal() {
           <IconButton edge="start" onClick={handleBackClick}>
             <ArrowBackIcon />
           </IconButton>
-          <Typography variant="h6">Astal {state.table.title} </Typography>
+          <Typography variant="h6">Sto: {state.table.title} </Typography>
         </Toolbar>
       </AppBar>
       {open && (
@@ -67,9 +69,16 @@ function SingleAstal() {
       )}
       <div className="singleAstal-body-container">
         {actionValue === 1 ? (
-          <DodavanjeNaStoComponenta tipoviProizvoda={tipoviProizvoda} />
+          <DodavanjeNaStoComponenta
+            tipoviProizvoda={tipoviProizvoda}
+            setActionValue={setActionValue}
+          />
         ) : null}
         {actionValue === 2 ? <KucaniProizvodi /> : null}
+        {actionValue === 4 ? (
+          <NaplataComponent setActionValue={setActionValue} />
+        ) : null}
+        {actionValue === 3 ? <StornoComponent /> : null}
       </div>
       <Paper
         sx={{
@@ -84,6 +93,8 @@ function SingleAstal() {
           showLabels
           onChange={(e, newValue) => {
             setActionValue(newValue);
+            if (newValue === 0)
+              navigate("/izvestaji", { state: { table: state.table } });
           }}
         >
           <BottomNavigationAction

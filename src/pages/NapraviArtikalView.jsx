@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../services/dataservice";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Alert from "@mui/material/Alert";
@@ -25,10 +25,46 @@ function NapraviArtikalView() {
   const [tipProizvoda, setTipProizvoda] = useState("");
   const [sastojciZaProizvod, setSastojciZaProizvod] = useState([]);
   const [dostupniSastojci, setDostupniSastojci] = useState([]);
-  const [cena, setCena] = useState(0);
+  const [cena, setCena] = useState(null);
   const [ime, setIme] = useState("");
+  const [kolicina, setKolicina] = useState(0);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const params = useParams();
+
+  useEffect(() => {
+    db.getTipProizvoda().then((res) => {
+      setTipoviProizvoda(res);
+    });
+    if (params.id) {
+      db.getSingleArtikalById(params.id).then((res) => {
+        setSastojciZaProizvod(res.subArtikli);
+        setTipProizvoda(res.tipProizvoda_id);
+        setIme(res.name);
+        setCena(res.cena);
+        setKolicina(res.kolicina);
+        if (res.tipProizvoda_id === 3) {
+          db.getArtikalById(2)
+            .then((res) => {
+              console.log(res);
+              setDostupniSastojci(res.artikli);
+            })
+            .catch((e) => {
+              console.error(e);
+            });
+        }
+        if (res.tipProizvoda_id === 4) {
+          db.getArtikalById(5)
+            .then((res) => {
+              setDostupniSastojci(res.artikli);
+            })
+            .catch((e) => {
+              console.error(e);
+            });
+        }
+      });
+    }
+  }, []);
 
   const handleBackClick = () => {
     navigate("/roba");
@@ -36,44 +72,60 @@ function NapraviArtikalView() {
 
   const handleChange = (event) => {
     setTipProizvoda(event.target.value);
-    console.log(event.target.value);
-    if (event.target.value.id === 3) {
+    if (event.target.value === 3) {
       db.getArtikalById(2)
         .then((res) => {
-          setDostupniSastojci(res);
+          setDostupniSastojci(res.artikli);
         })
         .catch((e) => {
-          console.log(e);
+          console.error(e);
         });
     }
-    if (event.target.value.id === 4) {
+    if (event.target.value === 4) {
       db.getArtikalById(5)
         .then((res) => {
-          setDostupniSastojci(res);
+          setDostupniSastojci(res.artikli);
         })
         .catch((e) => {
-          console.log(e);
+          console.error(e);
         });
     }
   };
 
   const onSubmit = async (values) => {
+    if (params.id) {
+      await db
+        .updateSingleArtikal(
+          params.id,
+          values.imeProizvoda,
+          values.tipProizvoda,
+          values.tipProizvoda == 2 || values.tipProizvoda == 5
+            ? null
+            : values.cena,
+          sastojciZaProizvod,
+          kolicina
+        )
+        .then(() => {
+          setOpen(true);
+        })
+        .catch((err) => {
+          alert(JSON.stringify(err));
+        });
+      return;
+    }
     await db
       .addArtikal(
         values.imeProizvoda,
-        values.tipProizvoda.id,
+        values.tipProizvoda,
         values.cena,
         sastojciZaProizvod
       )
-      .then((res) => {
-        console.log(res);
+      .then(() => {
         setOpen(true);
       })
       .catch((err) => {
         alert(JSON.stringify(err));
       });
-
-    console.log(values);
   };
 
   const handleClose = (event, reason) => {
@@ -93,35 +145,34 @@ function NapraviArtikalView() {
       errors.tipProizvoda = "Tip proizvoda je obavezan";
     }
     if (
-      tipProizvoda.id == 3 ||
-      tipProizvoda.id == 4 ||
-      (tipProizvoda.id == 1 && !values.cena)
+      tipProizvoda == 3 ||
+      tipProizvoda == 4 ||
+      (tipProizvoda == 1 && !values.cena)
     ) {
       errors.cena = "Cena je obavezna";
     }
     return errors;
   };
 
-  useEffect(() => {
-    db.getTipProizvoda().then((res) => {
-      setTipoviProizvoda(res);
-    });
-  }, []);
-
   const dodajSastojak = () => {
     setSastojciZaProizvod([
       ...sastojciZaProizvod,
       {
-        ime: "",
+        name: "",
         kolicina: 0,
+        id: "",
       },
     ]);
   };
 
   const handleChangeSastojak = (value, index) => {
     const newSastojci = [...sastojciZaProizvod];
-    newSastojci[index].ime = value;
+    newSastojci[index].id = dostupniSastojci.find(
+      (sastojak) => sastojak.name === value
+    ).id;
+    newSastojci[index].name = value;
     setSastojciZaProizvod(newSastojci);
+    console.log(newSastojci);
   };
 
   const handleChangeKolicina = (value, index) => {
@@ -146,18 +197,26 @@ function NapraviArtikalView() {
       </AppBar>
       {open && (
         <Alert severity="success" open={open} onClose={handleClose}>
-          <AlertTitle>Uspesno dodat proizvod</AlertTitle>
-          Proizvod je uspesno dodat u bazu podataka
+          {!params.id ? (
+            <AlertTitle>Uspesno dodat proizvod</AlertTitle>
+          ) : (
+            <AlertTitle>Uspesno izmenjen proizvod</AlertTitle>
+          )}
         </Alert>
       )}
       <Form
         onSubmit={onSubmit}
         validate={validate}
+        initialValues={{
+          imeProizvoda: ime,
+          tipProizvoda: tipProizvoda,
+          cena: cena,
+        }}
         render={({ handleSubmit, values, form, submitting }) => (
           <form
             onSubmit={(e) => {
               e.preventDefault();
-              if (tipProizvoda.id == 3 || tipProizvoda.id == 4) {
+              if (tipProizvoda == 3 || tipProizvoda == 4) {
                 onSubmit(values);
                 navigate("/roba");
               } else {
@@ -190,7 +249,10 @@ function NapraviArtikalView() {
             </Field>
             <Field name="tipProizvoda">
               {({ input, meta }) => (
-                <FormControl style={{ marginBottom: "20px", width: "30%" }}>
+                <FormControl
+                  disabled={params.id}
+                  style={{ marginBottom: "20px", width: "30%" }}
+                >
                   <InputLabel id="tipProizvoda-label">Tip Proizvoda</InputLabel>
                   <Select
                     {...input}
@@ -208,7 +270,7 @@ function NapraviArtikalView() {
                       Tip Proizvoda
                     </MenuItem>
                     {tipoviProizvoda.map((proizvod) => (
-                      <MenuItem key={proizvod.id} value={proizvod}>
+                      <MenuItem key={proizvod.id} value={proizvod.id}>
                         {proizvod.name}
                       </MenuItem>
                     ))}
@@ -216,7 +278,7 @@ function NapraviArtikalView() {
                 </FormControl>
               )}
             </Field>
-            {tipProizvoda.id === 3 || tipProizvoda.id === 4 ? (
+            {tipProizvoda === 3 || tipProizvoda === 4 ? (
               <div style={{ width: "30%", marginBottom: "20px" }}>
                 <p>Dodaj sastojke</p>
                 <FormControl className="dodavanje-sastojaka">
@@ -255,14 +317,14 @@ function NapraviArtikalView() {
                         <InputLabel>Sastojak</InputLabel>
                         <Select
                           label="Sastojak"
-                          value={sastojak.ime}
+                          value={sastojak.name}
                           onChange={(event) =>
                             handleChangeSastojak(event.target.value, index)
                           }
                           placeholder="Sastojak"
                         >
                           {dostupniSastojci.map((s) => (
-                            <MenuItem key={s.id} value={s}>
+                            <MenuItem key={s.id} value={s.name}>
                               {s.name}
                             </MenuItem>
                           ))}
@@ -295,9 +357,7 @@ function NapraviArtikalView() {
                 ))}
               </div>
             ) : null}
-            {tipProizvoda.id == 3 ||
-            tipProizvoda.id == 4 ||
-            tipProizvoda.id == 1 ? (
+            {tipProizvoda == 3 || tipProizvoda == 4 || tipProizvoda == 1 ? (
               <Field name="cena">
                 {({ input, meta }) => (
                   <FormControl style={{ width: "30%", marginBottom: "20px" }}>
@@ -316,13 +376,33 @@ function NapraviArtikalView() {
                 )}
               </Field>
             ) : null}
+            {tipProizvoda != 3 && tipProizvoda != 4 ? (
+              <Field name="kolicina">
+                {({ input, meta }) => (
+                  <FormControl style={{ width: "30%", marginBottom: "20px" }}>
+                    <InputLabel>Količina</InputLabel>
+                    <Input
+                      {...input}
+                      value={kolicina}
+                      error={!!meta.touched && !!meta.error}
+                      onChange={(event) => {
+                        input.onChange(event);
+                        setKolicina(event.target.value);
+                      }}
+                      type="number"
+                      placeholder="Količina"
+                    />
+                  </FormControl>
+                )}
+              </Field>
+            ) : null}
             <Button
               type="submit"
               variant="contained"
               color="primary"
               disabled={submitting}
             >
-              Dodaj
+              {params.id ? "Izmeni" : "Dodaj"}
             </Button>
           </form>
         )}

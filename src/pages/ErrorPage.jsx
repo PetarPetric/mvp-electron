@@ -8,7 +8,6 @@ const ErrorPage = () => {
         Stolovi
       </Link>
       <h1 style={styles.header}>Stranica ne postoji...</h1>
-      <h3>Za vise informacija kontaktirajte Petra</h3>
     </div>
   );
 };

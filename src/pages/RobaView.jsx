@@ -17,6 +17,8 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
+  TableFooter,
+  TablePagination,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -29,19 +31,78 @@ function RobaView() {
   const [tipoviProizvoda, setTipoviProizvoda] = useState([]);
   const [open, setOpen] = useState(false);
   const [selectedArtikal, setSelectedArtikal] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [page, setPage] = useState(0);
+  const [artikliCount, setArtikliCount] = useState(0);
 
   useEffect(() => {
-    Promise.all([db.getAllArtikli(), db.getTipProizvoda()]).then((res) => {
-      setArtikliToShow(res[0]);
+    Promise.all([
+      db.getAllArtikli(rowsPerPage, page),
+      db.getTipProizvoda(),
+    ]).then((res) => {
+      setArtikliToShow(res[0].artikli);
+      setArtikliCount(res[0].count);
       setTipoviProizvoda(res[1]);
     });
   }, []);
 
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+
+    if (artikalId) {
+      db.getArtikalById(
+        artikalId,
+        parseInt(event.target.value, 10),
+        0,
+        true
+      ).then((res) => {
+        setArtikliToShow(res.artikli);
+        setArtikliCount(res.count);
+      });
+      return;
+    }
+
+    db.getAllArtikli(parseInt(event.target.value, 10), 0).then((res) => {
+      setArtikliToShow(res.artikli);
+      setArtikliCount(res.count);
+    });
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+
+    if (artikalId) {
+      db.getArtikalById(artikalId, rowsPerPage, newPage + 1, true).then(
+        (res) => {
+          setArtikliToShow(res.artikli);
+        }
+      );
+      return;
+    }
+
+    db.getAllArtikli(rowsPerPage, newPage + 1).then((res) => {
+      setArtikliToShow(res.artikli);
+      setArtikliCount(res.count);
+    });
+  };
+
   const handleChange = (event) => {
     setArtikalId(event.target.value);
-    db.getArtikalById(event.target.value).then((res) => {
-      setArtikliToShow(res);
-    });
+    setRowsPerPage(10);
+    setPage(0);
+    if (!event.target.value) {
+      db.getAllArtikli(10, 0).then((res) => {
+        setArtikliToShow(res.artikli);
+        setArtikliCount(res.count);
+      });
+    } else {
+      db.getArtikalById(event.target.value, 10, 1, true).then((res) => {
+        console.log(res);
+        setArtikliToShow(res.artikli);
+        setArtikliCount(res.count);
+      });
+    }
   };
 
   return (
@@ -70,8 +131,9 @@ function RobaView() {
             variant="contained"
             onClick={() => {
               db.deleteArtikal(selectedArtikal.id).then(() => {
-                db.getAllArtikli().then((res) => {
-                  setArtikliToShow(res);
+                db.getAllArtikli(rowsPerPage, page).then((res) => {
+                  setArtikliToShow(res.artikli);
+                  setArtikliCount(res.count);
                 });
                 setOpen(false);
               });
@@ -112,6 +174,7 @@ function RobaView() {
                 handleChange(e);
               }}
             >
+              <MenuItem value="">Sve</MenuItem>
               {tipoviProizvoda.map((tipProizvoda) => (
                 <MenuItem value={tipProizvoda.id} key={tipProizvoda.id}>
                   {tipProizvoda.name}
@@ -133,7 +196,7 @@ function RobaView() {
           <TableBody>
             {artikliToShow.map((artikal, index) => (
               <TableRow key={artikal.id}>
-                <TableCell align="center">{index + 1}</TableCell>
+                <TableCell align="center">{artikal.id}</TableCell>
                 <TableCell align="center">{artikal.name}</TableCell>
                 <TableCell align="center">
                   {artikal.tipProizvoda_id == 3 ? "Jelo" : artikal.kolicina}
@@ -149,7 +212,7 @@ function RobaView() {
                     variant="contained"
                     onClick={() => {
                       setSelectedArtikal(artikal);
-                      navigate(`/izmena-proizvoda/${artikal.id}`);
+                      navigate(`/izmena-artikla/${artikal.id}`);
                     }}
                   >
                     <EditIcon style={{ width: "20px" }} />
@@ -169,6 +232,25 @@ function RobaView() {
               </TableRow>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[10, 20, 40]}
+                colSpan={4}
+                count={artikliCount}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                SelectProps={{
+                  inputProps: {
+                    "aria-label": "Rekorda po stranici",
+                  },
+                  native: true,
+                }}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </Paper>
     </>

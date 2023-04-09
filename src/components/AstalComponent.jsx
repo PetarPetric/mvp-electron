@@ -18,7 +18,8 @@ export default function SingleAstalView(props) {
         props.table.description === "napolje" && "astal-napolje"
       }`}
     >
-      {props.table.title}
+      <p>{props.table.title}</p>
+      {props.table.cena ? <p>{props.table.cena}</p> : null}
     </div>
   );
 }

@@ -32,12 +32,22 @@ const routes = createBrowserRouter([
         element: <NapraviArtikalView />,
       },
       {
+        path: "/izmena-artikla/:id",
+        element: <NapraviArtikalView />,
+      },
+      {
         path: "/dodavanje-proizvoda",
         element: <DodavanjeProizvodaView />,
       },
       {
         path: "/izvestaji",
         element: <IzvestajiView />,
+        children: [
+          {
+            path: "/izvestaji/:id",
+            element: <IzvestajiView />,
+          },
+        ],
       },
     ],
   },

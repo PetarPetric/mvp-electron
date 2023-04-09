@@ -1,7 +1,8 @@
 const electron = require("electron");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
-
+const ipcMain = electron.ipcMain;
+const { PosPrinter } = require("electron-pos-printer");
 const path = require("path");
 const isDev = require("electron-is-dev");
 
@@ -14,6 +15,7 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      enableRemoteModule: true,
     },
   });
   mainWindow.loadURL(
@@ -43,4 +45,61 @@ app.on("activate", () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+// let webContents = mainWindow.webContents;
+// let printers = webContents.getPrinters(); //list the printers
+
+ipcMain.on("printPorudzbinu", (event, arg) => {
+  const data = JSON.parse(arg);
+  PosPrinter.print(data, {
+    preview: true,
+    copies: 1,
+    printerName: "POS58",
+    pageSize: "58mm",
+    margin: "10px 10px 10px 10px",
+  })
+    .then(() => {
+      console.log(printers);
+      console.log("Printed successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
+ipcMain.on("printRacun", (event, arg) => {
+  const data = JSON.parse(arg);
+  PosPrinter.print(data, {
+    // preview: true,
+    copies: 1,
+    printerName: "POS58",
+    pageSize: "58mm",
+    margin: "10px 10px 10px 10px",
+  })
+    .then(() => {
+      console.log(printers);
+      console.log("Printed successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
+ipcMain.on("printStorno", (event, arg) => {
+  const data = JSON.parse(arg);
+  PosPrinter.print(data, {
+    preview: true,
+    copies: 1,
+    printerName: "POS58",
+    pageSize: "58mm",
+    margin: "10px 10px 10px 10px",
+  })
+    .then(() => {
+      console.log(printers);
+      console.log("Printed successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 });
