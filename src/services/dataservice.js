@@ -1,11 +1,19 @@
 import AppDAO from "../db/dao";
 import Crud from "../db/crud";
+const { ipcRenderer } = window.require("electron");
+
+async function getDatabasePath() {
+  const dbPath = await ipcRenderer.invoke("get-db-path");
+  return dbPath;
+}
 
 let dao;
 let db;
 
-function setDatabase() {
-  dao = new AppDAO("./node_modules/database.sqlite3");
+async function setDatabase() {
+  const dbPath = await getDatabasePath();
+  console.log(dbPath);
+  dao = new AppDAO(dbPath);
   db = new Crud(dao);
   db.createTable()
     .then(() => {

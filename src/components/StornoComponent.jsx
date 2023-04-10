@@ -26,7 +26,7 @@ function union(a, b) {
   return [...a, ...not(b, a)];
 }
 
-export default function KucaniProizvodi() {
+export default function KucaniProizvodi(props) {
   const { state } = useLocation();
   const [checked, setChecked] = useState([]);
   const [left, setLeft] = useState([]);
@@ -35,7 +35,6 @@ export default function KucaniProizvodi() {
 
   useEffect(() => {
     db.getNarudzbineNaStolu(state.table.id).then((res) => {
-      console.log(res);
       setLeft(res);
     });
   }, []);
@@ -188,8 +187,11 @@ export default function KucaniProizvodi() {
           <Button
             variant="contained"
             onClick={(e) => {
-              console.log(right);
-              db.stornirajPorudzbinu(state.table.id, right, description);
+              db.stornirajPorudzbinu(state.table.id, right, description).then(
+                () => {
+                  props.setActionValue(2);
+                }
+              );
             }}
             disabled={!right.length}
             style={{ height: "35px" }}

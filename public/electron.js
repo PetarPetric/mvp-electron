@@ -5,6 +5,7 @@ const ipcMain = electron.ipcMain;
 const { PosPrinter } = require("electron-pos-printer");
 const path = require("path");
 const isDev = require("electron-is-dev");
+const fs = require("fs");
 
 let mainWindow;
 
@@ -71,7 +72,7 @@ ipcMain.on("printPorudzbinu", (event, arg) => {
 ipcMain.on("printRacun", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
-    // preview: true,
+    preview: true,
     copies: 1,
     printerName: "POS58",
     pageSize: "58mm",
@@ -102,4 +103,27 @@ ipcMain.on("printStorno", (event, arg) => {
     .catch((error) => {
       console.error(error);
     });
+});
+
+ipcMain.on("printDnevni", (event, arg) => {
+  const data = JSON.parse(arg);
+  PosPrinter.print(data, {
+    preview: true,
+    copies: 1,
+    printerName: "POS58",
+    pageSize: "58mm",
+    margin: "10px 10px 10px 10px",
+  })
+    .then(() => {
+      console.log(printers);
+      console.log("Printed successfully");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+});
+
+ipcMain.handle("get-db-path", async () => {
+  const dbPath = await path.join(__dirname, "../db/database.sqlite3");
+  return dbPath;
 });

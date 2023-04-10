@@ -2,9 +2,10 @@ import {
   printPorudzbinu,
   printRacun,
   printStorno,
+  printDnevni,
   groupBy,
 } from "../services/printservice";
-const { ipcRenderer } = window.require("electron");
+import dayjs from "dayjs";
 
 class Crud {
   constructor(dao) {
@@ -98,8 +99,9 @@ class Crud {
       CREATE TABLE IF NOT EXISTS naplacene_narudzbine (
           id INTEGER PRIMARY KEY,
           stol_id INTEGER NOT NULL,
-          ukupna_cena INTEGER NOT NULL,
           created_at DATETIME DEFAULT (datetime('now','localtime')),
+          ukupna_cena INTEGER NOT NULL,
+          description TEXT,
           FOREIGN KEY (stol_id) REFERENCES stolovi(id)
       );
     `;
@@ -466,23 +468,24 @@ class Crud {
       const articleGroup = groupedArticles[artikalId];
       const quantity = articleGroup.length;
 
-      const promises = groupedArticles[artikalId].map((artikal) => {
-        this.dao.run(
-          "DELETE FROM narudzbine_artikli WHERE narudzbina_id = ? AND artikal_id = ?",
-          [artikal.narudzbina_id, artikal.artikal_id]
-        );
+      await this.dao.run(
+        `
+      DELETE FROM narudzbine_artikli
+      WHERE rowid IN (
+          SELECT rowid FROM narudzbine_artikli
+          WHERE artikal_id = ?
+          LIMIT ?
+      )
+      `,
+        [artikalId, quantity]
+      );
 
-        this.dao.run("DELETE from narudzbine WHERE id = ?", [
-          artikal.narudzbina_id,
-        ]);
-
-        return this.dao.run(
+      for (const artikal of articleGroup) {
+        await this.dao.run(
           "INSERT INTO naplacene_narudzbine_artikli (naplacena_narudzbina_id , artikal_id) VALUES (?, ?)",
           [narudzbina.id, artikal.artikal_id]
         );
-      });
-
-      await Promise.all(promises);
+      }
 
       // Update the artikli table by subtracting the quantity
       await this.updateKolicina(artikalId, -quantity);
@@ -542,10 +545,13 @@ class Crud {
 
   stornirajPorudzbinu = async (stolId, artikli, description) => {
     const groupedArticles = groupBy(artikli, "artikal_id");
+    const ukupnaCena = artikli.reduce((acc, curr) => {
+      return acc + curr.cena;
+    }, 0);
 
     const storniranaNarudzbina = await this.dao.run(
-      "INSERT INTO storno_narudzbine (stol_id, description) VALUES (?, ?)",
-      [stolId, description]
+      "INSERT INTO storno_narudzbine (stol_id, description, ukupna_cena) VALUES (?, ?, ?)",
+      [stolId, description, ukupnaCena]
     );
 
     const storniranaNarudzbinainfo = await this.dao.all(
@@ -555,27 +561,32 @@ class Crud {
 
     for (const artikalId in groupedArticles) {
       const quantity = groupedArticles[artikalId].length;
+      let counter = 0;
 
-      const promises = groupedArticles[artikalId].map((artikal) => {
-        this.dao.run(
-          `DELETE FROM narudzbine_artikli
-            WHERE rowid IN (
-                SELECT rowid FROM narudzbine_artikli
-                WHERE narudzbina_id = ? AND artikal_id = ?
-                LIMIT ?
-            )
+      for (const artikal of groupedArticles[artikalId]) {
+        if (counter < quantity) {
+          await this.dao.run(
+            `
+          DELETE FROM narudzbine_artikli
+          WHERE rowid = (
+              SELECT rowid FROM narudzbine_artikli
+              WHERE narudzbina_id = ? AND artikal_id = ?
+              LIMIT 1
+          )
           `,
-          [artikal.narudzbina_id, artikal.artikal_id, quantity]
-        );
+            [artikal.narudzbina_id, artikal.artikal_id]
+          );
 
-        return this.dao.run(
-          `
+          await this.dao.run(
+            `
           INSERT INTO storno_narudzbine_artikli (storno_narudzbina_id, artikal_id) VALUES (?, ?)
           `,
-          [storniranaNarudzbina.id, artikal.artikal_id]
-        );
-      });
-      await Promise.all(promises);
+            [storniranaNarudzbina.id, artikal.artikal_id]
+          );
+
+          counter++;
+        }
+      }
     }
 
     printStorno(groupedArticles, storniranaNarudzbinainfo, stolId);
@@ -615,98 +626,77 @@ class Crud {
   ) => {
     const offset = (pageNumber - 1) * pageSize;
 
-    const naplaceneNarudzbineCount = await this.dao.all(
+    const totalCount = await this.dao.all(
       `
       SELECT COUNT(*) as count
-      FROM naplacene_narudzbine
-      WHERE stol_id = ? AND created_at BETWEEN ? AND ?
-    `,
-      [stol_id, startDate, endDate]
-    );
-
-    const storniraneNarudzbineCount = await this.dao.all(
-      `
-      SELECT COUNT(*) as count
-      FROM storno_narudzbine
-      WHERE stol_id = ? AND created_at BETWEEN ? AND ?
-    `,
-      [stol_id, startDate, endDate]
-    );
-
-    const naplaceneOffset = Math.max(
-      0,
-      offset - storniraneNarudzbineCount.count
-    );
-    const naplaceneLimit =
-      pageSize - Math.max(0, storniraneOffset - naplaceneOffset);
-    const storniraneOffset = Math.max(
-      0,
-      offset - naplaceneNarudzbineCount.count
-    );
-    const storniraneLimit =
-      pageSize - Math.max(0, naplaceneOffset - storniraneOffset);
-
-    console.log(naplaceneLimit, naplaceneOffset);
-
-    const naplaceneNarudzbine = await this.dao.all(
-      `
-      SELECT
-        *,
-        'Naplaceno' as status
-      FROM
-        naplacene_narudzbine
-      WHERE
-        stol_id = ? AND created_at BETWEEN ? AND ?
-      ORDER BY
-        created_at ASC
-      LIMIT ?
-      OFFSET ?
-    `,
-      [stol_id, startDate, endDate, pageSize, offset]
-    );
-
-    const storniraneNarudzbine = await this.dao.all(
-      `
-      SELECT 
-        *,
-        'Stornirano' as status
-      FROM
-        storno_narudzbine
-      WHERE
-        stol_id = ? AND created_at BETWEEN ? AND ?
-      ORDER BY
-        created_at ASC
-      LIMIT ?
-      OFFSET ?
-    `,
-      [stol_id, startDate, endDate, pageSize, offset]
-    );
-
-    await Promise.all(
-      naplaceneNarudzbine.map(async (narudzbina) => {
-        const artikli = await this.dao.all(
-          `
-      SELECT
-        a.name,
-        a.cena,
-        a.id as artikal_id,
-        a.tipProizvoda_id as tip_proizvoda
-      FROM
-        naplacene_narudzbine_artikli na
-        JOIN artikli a ON na.artikal_id = a.id
-      WHERE
-        na.naplacena_narudzbina_id = ?
+      FROM (
+        SELECT id
+        FROM naplacene_narudzbine
+        WHERE stol_id = ? AND created_at BETWEEN ? AND ?
+        UNION ALL
+        SELECT id
+        FROM storno_narudzbine
+        WHERE stol_id = ? AND created_at BETWEEN ? AND ?
+      ) combined
       `,
-          [narudzbina.id]
-        );
-        narudzbina.artikli = artikli;
-      })
+      [stol_id, startDate, endDate, stol_id, startDate, endDate]
+    );
+
+    const combinedResults = await this.dao.all(
+      `
+        SELECT *
+        FROM (
+          SELECT
+            *,
+            'Naplaceno' as status
+          FROM
+            naplacene_narudzbine
+          WHERE
+            stol_id = ? AND created_at BETWEEN ? AND ?
+          UNION ALL
+          SELECT
+            *,
+            'Stornirano' as status
+          FROM
+            storno_narudzbine
+          WHERE
+            stol_id = ? AND created_at BETWEEN ? AND ?
+        ) combined
+        ORDER BY
+          created_at ASC
+        LIMIT ?
+        OFFSET ?
+      `,
+      [
+        stol_id,
+        startDate,
+        endDate,
+        stol_id,
+        startDate,
+        endDate,
+        pageSize,
+        offset,
+      ]
     );
 
     await Promise.all(
-      storniraneNarudzbine.map(async (narudzbina) => {
-        const artikli = await this.dao.all(
-          `
+      combinedResults.map(async (narudzbina) => {
+        let sql = "";
+        if (narudzbina.status === "Naplaceno") {
+          sql = `
+          SELECT
+            a.name,
+            a.cena,
+            a.id as artikal_id,
+            a.tipProizvoda_id as tip_proizvoda
+          FROM
+            naplacene_narudzbine_artikli na
+            JOIN artikli a ON na.artikal_id = a.id
+          WHERE
+            na.naplacena_narudzbina_id = ?
+          `;
+        } else {
+          sql = `
           SELECT
             a.name,
             a.cena,
@@ -717,25 +707,62 @@ class Crud {
             JOIN artikli a ON na.artikal_id = a.id
           WHERE
             na.storno_narudzbina_id = ?
-          `,
-          [narudzbina.id]
-        );
+          `;
+        }
+        const artikli = await this.dao.all(sql, [narudzbina.id]);
         narudzbina.artikli = artikli;
       })
     );
 
-    const combinedResults = [...naplaceneNarudzbine, ...storniraneNarudzbine];
-    combinedResults.sort(
-      (a, b) => new Date(a.created_at) - new Date(b.created_at)
-    );
-
-    const totalCount =
-      naplaceneNarudzbineCount[0].count + storniraneNarudzbineCount[0].count;
-
     return {
       result: combinedResults,
-      count: totalCount,
+      count: totalCount[0].count,
     };
+  };
+
+  getDnevniIzvestaj = async () => {
+    // get all naplaceni artikli and all storno artikli for today with dayjs
+    const startDateFormated = dayjs().format("YYYY-MM-DD") + " 00:00:00";
+    const endDateFormated = dayjs().format("YYYY-MM-DD") + " 23:59:59";
+
+    const naplaceneNarudzbine = await this.dao.all(
+      `
+        SELECT
+          a.name,
+          a.cena,
+          a.id as artikal_id,
+          a.tipProizvoda_id as tip_proizvoda,
+          'Naplaceno' as status
+        FROM
+          naplacene_narudzbine_artikli na
+          JOIN artikli a ON na.artikal_id = a.id
+          JOIN naplacene_narudzbine nn ON na.naplacena_narudzbina_id = nn.id
+        WHERE
+          nn.created_at BETWEEN ? AND ?
+        `,
+      [startDateFormated, endDateFormated]
+    );
+
+    const storniraneNarudzbine = await this.dao.all(
+      `
+        SELECT
+          a.name,
+          a.cena,
+          a.id as artikal_id,
+          a.tipProizvoda_id as tip_proizvoda,
+          'Stornirano' as status
+        FROM
+          storno_narudzbine_artikli na
+          JOIN artikli a ON na.artikal_id = a.id
+          JOIN storno_narudzbine sn ON na.storno_narudzbina_id = sn.id
+        WHERE
+          sn.created_at BETWEEN ? AND ?
+        `,
+      [startDateFormated, endDateFormated]
+    );
+
+    console.log(naplaceneNarudzbine, storniraneNarudzbine);
+    printDnevni(naplaceneNarudzbine, storniraneNarudzbine);
   };
 }
 

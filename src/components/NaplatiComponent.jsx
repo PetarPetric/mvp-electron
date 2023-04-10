@@ -255,7 +255,7 @@ export default function NaplatiKomponenta(props) {
                     ukupnaCena,
                     checked
                   ).then((res) => {
-                    alert("Uspesno ste naplatili racun!");
+                    alert("Uspesno ste naplatili proizvode!");
                     props.setActionValue(2);
                   });
                 }}

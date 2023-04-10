@@ -98,7 +98,6 @@ function RobaView() {
       });
     } else {
       db.getArtikalById(event.target.value, 10, 1, true).then((res) => {
-        console.log(res);
         setArtikliToShow(res.artikli);
         setArtikliCount(res.count);
       });

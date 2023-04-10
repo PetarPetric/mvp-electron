@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import { setDatabase } from "./services/dataservice";
 import { Outlet, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
+import PasswordDialog from "./components/PasswordDialog";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-
 import {
   AppBar,
   Toolbar,
@@ -21,6 +21,8 @@ setDatabase();
 const App = ({ children }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [location, setLocation] = useState("");
 
   const toggleDrawer = () => {
     setOpen(!open);
@@ -78,16 +80,30 @@ const App = ({ children }) => {
             </ListItemButton>
             <ListItemButton
               onClick={() => {
-                navigate("/izvestaji");
-                setOpen(false);
+                setLocation("izvestaji");
+                setPasswordDialogOpen(true);
               }}
             >
-              <ListItemText primary="Izvestaji" />
+              <ListItemText secondary="Izvestaji" />
+            </ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                setLocation("dnevni-izvestaj");
+                setPasswordDialogOpen(true);
+              }}
+            >
+              <ListItemText secondary="Dnevni Izvestaj" />
             </ListItemButton>
           </List>
         </div>
       </Drawer>
       <Outlet />
+      <PasswordDialog
+        open={passwordDialogOpen}
+        setOpen={setOpen}
+        setOpenModal={setPasswordDialogOpen}
+        type={location}
+      />
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "../services/dataservice";
 import {
-  Button,
   Table,
   TableCell,
   TableBody,
@@ -115,9 +114,8 @@ function RobaView() {
         startDateFormated,
         endDateFormated,
         rowsPerPage,
-        page
+        page + 1
       ).then((res) => {
-        console.log(res);
         setArtikliCount(res.count);
         setArtikliToShow(res.result);
       });
@@ -126,9 +124,8 @@ function RobaView() {
         startDateFormated,
         endDateFormated,
         rowsPerPage,
-        page
+        page + 1
       ).then((res) => {
-        console.log(res);
         setArtikliCount(res.count);
         setArtikliToShow(res.result);
       });

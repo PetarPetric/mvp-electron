@@ -3,6 +3,7 @@ import { db } from "../services/dataservice";
 import { useNavigate } from "react-router-dom";
 import { useParams, useLocation } from "react-router-dom";
 import DodavanjeNaStoComponenta from "../components/DodavanjeProizvodaComponent";
+import PasswordDialog from "../components/PasswordDialog";
 import KucaniProizvodi from "../components/KucaniProizvodi";
 import NaplataComponent from "../components/NaplatiComponent";
 import StornoComponent from "../components/StornoComponent";
@@ -74,11 +75,15 @@ function SingleAstal() {
             setActionValue={setActionValue}
           />
         ) : null}
-        {actionValue === 2 ? <KucaniProizvodi /> : null}
+        {actionValue === 2 ? (
+          <KucaniProizvodi setActionValue={setActionValue} />
+        ) : null}
         {actionValue === 4 ? (
           <NaplataComponent setActionValue={setActionValue} />
         ) : null}
-        {actionValue === 3 ? <StornoComponent /> : null}
+        {actionValue === 3 ? (
+          <StornoComponent setActionValue={setActionValue} />
+        ) : null}
       </div>
       <Paper
         sx={{

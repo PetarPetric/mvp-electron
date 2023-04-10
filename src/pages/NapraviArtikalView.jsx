@@ -46,7 +46,6 @@ function NapraviArtikalView() {
         if (res.tipProizvoda_id === 3) {
           db.getArtikalById(2)
             .then((res) => {
-              console.log(res);
               setDostupniSastojci(res.artikli);
             })
             .catch((e) => {
@@ -172,7 +171,6 @@ function NapraviArtikalView() {
     ).id;
     newSastojci[index].name = value;
     setSastojciZaProizvod(newSastojci);
-    console.log(newSastojci);
   };
 
   const handleChangeKolicina = (value, index) => {
