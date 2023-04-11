@@ -374,7 +374,7 @@ function NapraviArtikalView() {
                 )}
               </Field>
             ) : null}
-            {tipProizvoda != 3 && tipProizvoda != 4 ? (
+            {tipProizvoda != 3 && tipProizvoda != 4 && params.id ? (
               <Field name="kolicina">
                 {({ input, meta }) => (
                   <FormControl style={{ width: "30%", marginBottom: "20px" }}>

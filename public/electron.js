@@ -124,6 +124,7 @@ ipcMain.on("printDnevni", (event, arg) => {
 });
 
 ipcMain.handle("get-db-path", async () => {
-  const dbPath = await path.join(__dirname, "../db/database.sqlite3");
+  // const dbPath = await path.join(__dirname, "../db/database.sqlite3");
+  const dbPath = await path.join(__dirname, "../node_modules/database.sqlite3");
   return dbPath;
 });

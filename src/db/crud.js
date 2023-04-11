@@ -178,28 +178,63 @@ class Crud {
     const INSERT_KOMADNO = `
     INSERT INTO artikli (name, tipProizvoda_id, cena) 
     VALUES
-      ('Koka kola', 1, 120),
+      ('Coca Cola', 1, 120),
       ('Fanta', 1, 120),
       ('Biter', 1, 120),
       ('Tonik', 1, 120),
       ('Jabuka', 1, 120),
-      ('Breska', 1, 120),
+      ('Breskva', 1, 120),
       ('Jagoda', 1, 120),
       ('Djus', 1, 120),
       ('Lav 0.5', 1, 120),
       ('Heiniken 0.4', 1, 150),
       ('Voda OB 0.25', 1, 120),
       ('Kisela voda 0.25', 1, 120),
-      ('Kisela v0da 0.7', 1, 160),
+      ('Kisela voda 0.7', 1, 160),
       ('Nespreso', 1, 150),
       ('Nespreso mleko', 1, 160),
       ('Banjalucko 0.3', 1, 140),
-      ('nektar limun', 1, 150),
-      ('Guaran', 1, 150),
+      ('Nektar limun', 1, 150),
+      ('Guarana', 1, 150),
       ('Voda negazirana', 1, 120),
       ('Domaca kafa', 1, 100);
     `;
 
+    const INSERT_PIZZE = `
+    INSERT INTO artikli (id, name, tipProizvoda_id, cena, kolicina)
+      VALUES
+      (1, 'MVP Pizza 24', 3, 0, 0),
+      (2, 'MVP Pizza 32', 3, 0, 0),
+      (3, 'MVP Pizza 50', 3, 0, 0),
+      (4, 'Capricciosa 24', 3, 0, 0),
+      (5, 'Capricciosa 32', 3, 0, 0),
+      (6, 'Capricciosa 50', 3, 0, 0),
+      (7, 'Diavolo 24', 3, 0, 0),
+      (8, 'Diavolo 32', 3, 0, 0),
+      (9, 'Diavolo 50', 3, 0, 0),
+      (10, 'Vesuvio 24', 3, 0, 0),
+      (11, 'Vesuvio 32', 3, 0, 0),
+      (12, 'Vesuvio 50', 3, 0, 0),
+      (13, 'Quattro Stagioni 24', 3, 0, 0),
+      (14, 'Quattro Stagioni 32', 3, 0, 0),
+      (15, 'Quattro Stagioni 50', 3, 0, 0),
+      (16, 'Uzicanka 24', 3, 0, 0),
+      (17, 'Uzicanka 32', 3, 0, 0),
+      (18, 'Uzicanka 50', 3, 0, 0),
+      (19, 'Sortino 24', 3, 0, 0),
+      (20, 'Sortino 32', 3, 0, 0),
+      (21, 'Srbijana 24', 3, 0, 0),
+      (22, 'Srbijana 32', 3, 0, 0),
+      (23, 'Srbijana 50', 3, 0, 0),
+      (24, 'Quattro Formaggi 24', 3, 0, 0),
+      (25, 'Quattro Formaggi 32', 3, 0, 0),
+      (26, 'Quattro Formaggi 50', 3, 0, 0),
+      (27, 'Vegetarijana 24', 3, 0, 0),
+      (28, 'Vegetarijana 32', 3, 0, 0),
+      (29, 'Vegetarijana 50', 3, 0, 0);
+    `;
+
+    this.dao.run(CREATE_ARTIKLI);
     this.dao.run(CREATE_TIP_PROIZVODA);
     this.dao.run(CREATE_SUBARTIKLI);
     this.dao.run(CREATE_NARUDZBINE);
@@ -211,8 +246,9 @@ class Crud {
     this.dao.run(CREATE_NAPLACENE_NARUDZBINE);
     this.dao.run(CREATE_NAPLACENE_NARUDZBINE_ARTIKLI);
     this.dao.run(CREATE_STORNO_NARUDZBINE);
-    this.dao.run(CREATE_STORNO_NARUDZBINE_ARTIKLI);
-    return this.dao.run(CREATE_ARTIKLI);
+    return this.dao.run(CREATE_STORNO_NARUDZBINE_ARTIKLI);
+    // this.dao.run(INSERT_NA_KILO);
+    // return this.dao.run(INSERT_KOMADNO);
   }
 
   getTipProizvoda = () => {
@@ -725,6 +761,25 @@ class Crud {
     const startDateFormated = dayjs().format("YYYY-MM-DD") + " 00:00:00";
     const endDateFormated = dayjs().format("YYYY-MM-DD") + " 23:59:59";
 
+    const narudzbineArtikli = await this.dao.all(
+      `
+        SELECT * FROM narudzbine_artikli
+        LIMIT 5
+      `
+    );
+
+    if (narudzbineArtikli.length) {
+      alert("Nisu naplaceni svi stolovi!");
+      return;
+    }
+
+    // delete all narudzbine
+    await this.dao.run(
+      `
+        DELETE FROM narudzbine
+      `
+    );
+
     const naplaceneNarudzbine = await this.dao.all(
       `
         SELECT
@@ -760,8 +815,8 @@ class Crud {
         `,
       [startDateFormated, endDateFormated]
     );
+    alert("Dnevni izvestaj se stampa");
 
-    console.log(naplaceneNarudzbine, storniraneNarudzbine);
     printDnevni(naplaceneNarudzbine, storniraneNarudzbine);
   };
 }

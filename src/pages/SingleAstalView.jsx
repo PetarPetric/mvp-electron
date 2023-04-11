@@ -30,9 +30,10 @@ function SingleAstal() {
   const [tipoviProizvoda, setTipoviProizvoda] = useState([]);
   const [open, setOpen] = useState(false);
   const [actionValue, setActionValue] = useState(2);
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const navigate = useNavigate();
   const params = useParams();
-  const { state } = useLocation();
+  const { state = {} } = useLocation();
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -97,9 +98,11 @@ function SingleAstal() {
         <BottomNavigation
           showLabels
           onChange={(e, newValue) => {
-            setActionValue(newValue);
-            if (newValue === 0)
-              navigate("/izvestaji", { state: { table: state.table } });
+            if (newValue === 0) {
+              setPasswordDialogOpen(true);
+            } else {
+              setActionValue(newValue);
+            }
           }}
         >
           <BottomNavigationAction
@@ -123,6 +126,12 @@ function SingleAstal() {
           <BottomNavigationAction label="Naplati" icon={<PaymentsIcon />} />
         </BottomNavigation>
       </Paper>
+      <PasswordDialog
+        open={passwordDialogOpen}
+        setOpen={setOpen}
+        setOpenModal={setPasswordDialogOpen}
+        type={"sto-izvestaj"}
+      />
     </>
   );
 }

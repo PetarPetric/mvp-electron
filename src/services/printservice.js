@@ -60,7 +60,7 @@ function printRacun(groupedArticles, narudzbinaInfo, stolId) {
     }),
     {
       type: "text",
-      value: "Cena ukupno: " + narudzbinaInfo[0].ukupna_cena + " DIN",
+      value: "Cena ukupno: " + narudzbinaInfo[0].ukupna_cena + " din",
       style: {
         fontWeight: "600",
         textAlign: "left",

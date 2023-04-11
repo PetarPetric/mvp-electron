@@ -6,26 +6,25 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import { db } from "../services/dataservice";
-const { useNavigate } = require("react-router-dom");
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function PasswordDialog(props) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const { state = {} } = useLocation();
 
   const handleNext = () => {
-    console.log(props.type);
     if (password == "0407") {
       props.setOpenModal(false);
       if (props.type == "dnevni-izvestaj") {
         db.getDnevniIzvestaj().then(() => {
-          alert("Dnevni izvestaj se stampa");
           props.setOpen(false);
         });
       } else if (props.type == "izvestaji") {
         navigate("/izvestaji");
         props.setOpen(false);
       } else if (props.type == "sto-izvestaj") {
-        navigate(props.type);
+        navigate("/izvestaji", { state: { table: state.table } });
       }
     } else {
       alert("Pogresna sifra");

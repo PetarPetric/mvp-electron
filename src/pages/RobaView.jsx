@@ -37,9 +37,10 @@ function RobaView() {
 
   useEffect(() => {
     Promise.all([
-      db.getAllArtikli(rowsPerPage, page),
+      db.getArtikalById(1, rowsPerPage, page),
       db.getTipProizvoda(),
     ]).then((res) => {
+      handleChange({ target: { value: 1 } });
       setArtikliToShow(res[0].artikli);
       setArtikliCount(res[0].count);
       setTipoviProizvoda(res[1]);
@@ -130,9 +131,16 @@ function RobaView() {
             variant="contained"
             onClick={() => {
               db.deleteArtikal(selectedArtikal.id).then(() => {
-                db.getAllArtikli(rowsPerPage, page).then((res) => {
+                db.getArtikalById(
+                  selectedArtikal.tipProizvoda_id,
+                  rowsPerPage,
+                  page
+                ).then((res) => {
                   setArtikliToShow(res.artikli);
                   setArtikliCount(res.count);
+                  handleChange({
+                    target: { value: selectedArtikal.tipProizvoda_id },
+                  });
                 });
                 setOpen(false);
               });
@@ -173,7 +181,6 @@ function RobaView() {
                 handleChange(e);
               }}
             >
-              <MenuItem value="">Sve</MenuItem>
               {tipoviProizvoda.map((tipProizvoda) => (
                 <MenuItem value={tipProizvoda.id} key={tipProizvoda.id}>
                   {tipProizvoda.name}
@@ -201,7 +208,7 @@ function RobaView() {
                   {artikal.tipProizvoda_id == 3 ? "Jelo" : artikal.kolicina}
                 </TableCell>
                 <TableCell align="center">
-                  {artikal.cena || "Sastojak nema cenu"}
+                  {artikal.cena || "Artikal nema cenu"}
                 </TableCell>
                 <TableCell align="center">
                   <Button
@@ -235,7 +242,7 @@ function RobaView() {
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[10, 20, 40]}
-                colSpan={4}
+                colSpan={5}
                 count={artikliCount}
                 rowsPerPage={rowsPerPage}
                 page={page}
@@ -243,7 +250,6 @@ function RobaView() {
                   inputProps: {
                     "aria-label": "Rekorda po stranici",
                   },
-                  native: true,
                 }}
                 onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
