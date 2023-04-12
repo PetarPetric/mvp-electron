@@ -104,7 +104,7 @@ export default function NaplatiKomponenta(props) {
 
   return (
     <>
-      <Card sx={{ margin: 2 }}>
+      <Card sx={{ margin: 2, overflow: "auto", maxHeight: "70vh" }}>
         <CardHeader
           sx={{ px: 2, py: 1 }}
           avatar={
@@ -134,7 +134,7 @@ export default function NaplatiKomponenta(props) {
         <List
           sx={{
             width: 400,
-            height: 500,
+            height: 450,
             bgcolor: "background.paper",
             overflow: "auto",
           }}
@@ -176,6 +176,7 @@ export default function NaplatiKomponenta(props) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            margin: "0 10px",
           }}
         >
           <h4>Ukupno: {ukupnaCena}</h4>

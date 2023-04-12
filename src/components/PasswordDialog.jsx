@@ -42,14 +42,12 @@ export default function PasswordDialog(props) {
         <DialogTitle>Izvestaji</DialogTitle>
         <DialogContent>
           <TextField
-            autoFocus
             margin="dense"
             id="password"
             type="password"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
-            fullWidth
             variant="standard"
           />
         </DialogContent>

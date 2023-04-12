@@ -30,7 +30,6 @@ function createWindow() {
     mainWindow.webContents.openDevTools();
   }
 
-  mainWindow.webContents.openDevTools();
   mainWindow.maximize();
   mainWindow.setMenu(null);
   mainWindow.on("closed", () => (mainWindow = null));
@@ -50,17 +49,20 @@ app.on("activate", () => {
   }
 });
 
-// let webContents = mainWindow.webContents;
-// let printers = webContents.getPrinters(); //list the printers
+function getDefaultPrinterName(webContents) {
+  const printers = webContents.getPrinters();
+  const defaultPrinter = printers.find((printer) => printer.isDefault);
+  return defaultPrinter ? defaultPrinter.name : null;
+}
 
 ipcMain.on("printPorudzbinu", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
-    preview: true,
     copies: 1,
-    printerName: "POS58",
+    printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 10px 10px 10px",
+    silent: true,
   })
     .then(() => {
       console.log(printers);
@@ -74,11 +76,11 @@ ipcMain.on("printPorudzbinu", (event, arg) => {
 ipcMain.on("printRacun", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
-    preview: true,
     copies: 1,
-    printerName: "POS58",
+    printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 10px 10px 10px",
+    silent: true,
   })
     .then(() => {
       console.log(printers);
@@ -92,11 +94,11 @@ ipcMain.on("printRacun", (event, arg) => {
 ipcMain.on("printStorno", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
-    preview: true,
     copies: 1,
-    printerName: "POS58",
+    printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 10px 10px 10px",
+    silent: true,
   })
     .then(() => {
       console.log(printers);
@@ -112,9 +114,10 @@ ipcMain.on("printDnevni", (event, arg) => {
   PosPrinter.print(data, {
     preview: true,
     copies: 1,
-    printerName: "POS58",
+    printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 10px 10px 10px",
+    silent: true,
   })
     .then(() => {
       console.log(printers);
