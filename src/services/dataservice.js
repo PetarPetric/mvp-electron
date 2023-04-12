@@ -12,7 +12,6 @@ let db;
 
 async function setDatabase() {
   const dbPath = await getDatabasePath();
-  console.log(dbPath);
   dao = new AppDAO(dbPath);
   db = new Crud(dao);
   db.createTable()

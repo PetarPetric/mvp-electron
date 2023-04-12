@@ -11,7 +11,6 @@ import App from "../App";
 const routes = createBrowserRouter([
   {
     path: "/",
-    redirect: "/stolovi",
     element: <App />,
     errorElement: <ErrorView />,
     children: [

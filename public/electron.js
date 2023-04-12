@@ -29,6 +29,8 @@ function createWindow() {
     //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
     mainWindow.webContents.openDevTools();
   }
+
+  mainWindow.webContents.openDevTools();
   mainWindow.maximize();
   mainWindow.setMenu(null);
   mainWindow.on("closed", () => (mainWindow = null));
@@ -124,7 +126,25 @@ ipcMain.on("printDnevni", (event, arg) => {
 });
 
 ipcMain.handle("get-db-path", async () => {
-  // const dbPath = await path.join(__dirname, "../db/database.sqlite3");
-  const dbPath = await path.join(__dirname, "../node_modules/database.sqlite3");
-  return dbPath;
+  // Get the user data path and create the database directory if it doesn't exist
+  const userDataPath = app.getPath("userData");
+  const dbPath = path.join(userDataPath, "db");
+
+  if (!fs.existsSync(dbPath)) {
+    fs.mkdirSync(dbPath);
+  }
+
+  // Copy the bundled database file to the user data directory if it doesn't exist there already
+  const bundledDbPath = path.join(
+    process.resourcesPath,
+    "db",
+    "database.sqlite3"
+  );
+  const userDbPath = path.join(dbPath, "database.sqlite3");
+
+  if (!fs.existsSync(userDbPath)) {
+    fs.copyFileSync(bundledDbPath, userDbPath);
+  }
+
+  return userDbPath;
 });
