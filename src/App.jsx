@@ -42,7 +42,7 @@ const App = ({ children }) => {
           >
             <MenuIcon color="white" />
             <Typography variant="h6" className="title">
-              MVPizzeria
+              Aleksandar-SC
             </Typography>
           </IconButton>
         </Toolbar>
