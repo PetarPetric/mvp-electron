@@ -33,37 +33,39 @@ function NapraviArtikalView() {
   const params = useParams();
 
   useEffect(() => {
-    db.getTipProizvoda().then((res) => {
-      setTipoviProizvoda(res);
-    });
-    if (params.id) {
-      db.getSingleArtikalById(params.id).then((res) => {
+    async function fetchData() {
+      const tipProizvoda = await db.getTipProizvoda();
+      setTipoviProizvoda(tipProizvoda);
+
+      if (params.id) {
+        const res = await db.getSingleArtikalById(params.id);
         setSastojciZaProizvod(res.subArtikli);
         setTipProizvoda(res.tipProizvoda_id);
         setIme(res.name);
         setCena(res.cena);
         setKolicina(res.kolicina);
         if (res.tipProizvoda_id === 3) {
-          db.getArtikalById(2)
-            .then((res) => {
-              setDostupniSastojci(res.artikli);
-            })
-            .catch((e) => {
-              console.error(e);
-            });
+          try {
+            const sastojci = await db.getArtikalById(2);
+            setDostupniSastojci(sastojci.artikli);
+          } catch (e) {
+            console.error(e);
+          }
         }
         if (res.tipProizvoda_id === 4) {
-          db.getArtikalById(5)
-            .then((res) => {
-              setDostupniSastojci(res.artikli);
-            })
-            .catch((e) => {
-              console.error(e);
-            });
+          try {
+            const sastojci = await db.getArtikalById(5);
+            setDostupniSastojci(sastojci.artikli);
+          } catch (e) {
+            console.error(e);
+          }
         }
-      });
+      }
     }
+
+    fetchData();
   }, []);
+
 
   const handleBackClick = () => {
     navigate("/roba");
@@ -159,17 +161,18 @@ function NapraviArtikalView() {
       {
         name: "",
         kolicina: 0,
-        id: "",
+        artikal_id: "",
       },
     ]);
   };
 
   const handleChangeSastojak = (value, index) => {
     const newSastojci = [...sastojciZaProizvod];
-    newSastojci[index].id = dostupniSastojci.find(
-      (sastojak) => sastojak.name === value
-    ).id;
-    newSastojci[index].name = value;
+    newSastojci[index].name = dostupniSastojci.find(
+      (sastojak) => sastojak.id === value
+    ).name;
+    newSastojci[index].artikal_id = value;
+    newSastojci[index].id = value;
     setSastojciZaProizvod(newSastojci);
   };
 
@@ -248,7 +251,7 @@ function NapraviArtikalView() {
             <Field name="tipProizvoda">
               {({ input, meta }) => (
                 <FormControl
-                  disabled={params.id}
+                  disabled={!!params.id}
                   style={{ marginBottom: "20px", width: "30%" }}
                 >
                   <InputLabel id="tipProizvoda-label">Tip Proizvoda</InputLabel>
@@ -315,15 +318,16 @@ function NapraviArtikalView() {
                         <InputLabel>Sastojak</InputLabel>
                         <Select
                           label="Sastojak"
-                          value={sastojak.name}
-                          onChange={(event) =>
+                          value={sastojak.artikal_id}
+                          onChange={(event) => {
                             handleChangeSastojak(event.target.value, index)
+                          }
                           }
                           placeholder="Sastojak"
                         >
-                          {dostupniSastojci.map((s) => (
-                            <MenuItem key={s.id} value={s.name}>
-                              {s.name}
+                          {dostupniSastojci.map((dostupanSastojak) => (
+                            <MenuItem key={dostupanSastojak.id} value={dostupanSastojak.id}>
+                              {dostupanSastojak.name}
                             </MenuItem>
                           ))}
                         </Select>

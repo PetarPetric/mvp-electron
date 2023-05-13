@@ -28,6 +28,7 @@ const App = ({ children }) => {
     setOpen(!open);
   };
 
+
   return (
     <div className="root">
       <AppBar position="static">

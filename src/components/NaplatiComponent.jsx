@@ -71,7 +71,7 @@ export default function NaplatiKomponenta(props) {
       const groupedByDate = groupBy(res, "created_at");
       setGroupedNarudzbineNaStolu(groupedByDate);
     });
-  }, []);
+  }, [state.table.id]);
 
   useEffect(() => {
     setUkupnaCena(
@@ -112,11 +112,11 @@ export default function NaplatiKomponenta(props) {
               onClick={handleToggleAll(narudzbineNaStolu)}
               checked={
                 numberOfChecked(narudzbineNaStolu) ===
-                  narudzbineNaStolu.length && narudzbineNaStolu.length !== 0
+                narudzbineNaStolu.length && narudzbineNaStolu.length !== 0
               }
               indeterminate={
                 numberOfChecked(narudzbineNaStolu) !==
-                  narudzbineNaStolu.length &&
+                narudzbineNaStolu.length &&
                 numberOfChecked(narudzbineNaStolu) !== 0
               }
               disabled={narudzbineNaStolu.length === 0}
@@ -126,9 +126,8 @@ export default function NaplatiKomponenta(props) {
             />
           }
           title={"Naplati"}
-          subheader={`${numberOfChecked(narudzbineNaStolu)}/${
-            narudzbineNaStolu.length
-          } selected`}
+          subheader={`${numberOfChecked(narudzbineNaStolu)}/${narudzbineNaStolu.length
+            } selected`}
         />
         <Divider />
         <List
@@ -171,27 +170,6 @@ export default function NaplatiKomponenta(props) {
           ))}
         </List>
         <Divider />
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            margin: "0 10px",
-          }}
-        >
-          <h4>Ukupno: {ukupnaCena}</h4>
-          <Button
-            variant="contained"
-            onClick={(e) => {
-              setGroupedById(groupBy(checked, "artikal_id"));
-              handleOpen();
-            }}
-            disabled={!ukupnaCena}
-            style={{ height: "35px" }}
-          >
-            Naplati
-          </Button>
-        </div>
       </Card>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -269,6 +247,28 @@ export default function NaplatiKomponenta(props) {
           </Box>
         </Fade>
       </Modal>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "0 10px",
+        }}
+      >
+        <h4>Ukupno: {ukupnaCena}</h4>
+        <Button
+          variant="contained"
+          onClick={(e) => {
+            setGroupedById(groupBy(checked, "artikal_id"));
+            handleOpen();
+          }}
+          disabled={!ukupnaCena}
+          style={{ height: "35px" }}
+        >
+          Naplati
+        </Button>
+      </div>
     </>
   );
 }

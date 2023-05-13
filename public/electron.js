@@ -112,7 +112,6 @@ ipcMain.on("printStorno", (event, arg) => {
 ipcMain.on("printDnevni", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
-    preview: true,
     copies: 1,
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
@@ -129,25 +128,30 @@ ipcMain.on("printDnevni", (event, arg) => {
 });
 
 ipcMain.handle("get-db-path", async () => {
-  // Get the user data path and create the database directory if it doesn't exist
-  const userDataPath = app.getPath("userData");
-  const dbPath = path.join(userDataPath, "db");
+  let dbPath;
 
-  if (!fs.existsSync(dbPath)) {
-    fs.mkdirSync(dbPath);
+  if (isDev) {
+    // In development mode, use the "database" folder in the application's root directory
+    dbPath = path.join(__dirname, "..", "database");
+  } else {
+    // In production mode, use the "db" folder in the user data directory
+    const userDataPath = app.getPath("userData");
+    dbPath = path.join(userDataPath, "db");
+
+    // Create the database directory if it doesn't exist
+    if (!fs.existsSync(dbPath)) {
+      fs.mkdirSync(dbPath);
+    }
+
+    // Copy the bundled database file to the user data directory if it doesn't exist there already
+    const bundledDbPath = path.join(process.resourcesPath, "db", "database.sqlite3");
+    const userDbPath = path.join(dbPath, "database.sqlite3");
+
+    if (!fs.existsSync(userDbPath)) {
+      fs.copyFileSync(bundledDbPath, userDbPath);
+    }
   }
 
-  // Copy the bundled database file to the user data directory if it doesn't exist there already
-  const bundledDbPath = path.join(
-    process.resourcesPath,
-    "db",
-    "database.sqlite3"
-  );
-  const userDbPath = path.join(dbPath, "database.sqlite3");
-
-  if (!fs.existsSync(userDbPath)) {
-    fs.copyFileSync(bundledDbPath, userDbPath);
-  }
-
-  return userDbPath;
+  return path.join(dbPath, "database.sqlite3");
 });
+

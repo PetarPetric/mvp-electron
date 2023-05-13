@@ -41,14 +41,14 @@ export default function PasswordDialog(props) {
       >
         <DialogTitle>Izvestaji</DialogTitle>
         <DialogContent>
-          <TextField
-            margin="dense"
+          <input
             id="password"
-            type="password"
+            type={"password"}
+            style={{ height: "45px", borderRadius: "5px", border: "1px solid #ccc", padding: "5px", margin: '10px 0' }}
+            label="Sifra"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
-            variant="standard"
           />
         </DialogContent>
         <DialogActions>

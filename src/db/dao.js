@@ -1,4 +1,4 @@
-const sqlite3 = window.require("sqlite3");
+const sqlite3 = window.require("sqlite3").verbose()
 const Promise = window.require("bluebird");
 
 class AppDAO {

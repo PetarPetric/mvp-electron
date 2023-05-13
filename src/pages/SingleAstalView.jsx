@@ -32,7 +32,6 @@ function SingleAstal() {
   const [actionValue, setActionValue] = useState(2);
   const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
   const navigate = useNavigate();
-  const params = useParams();
   const { state = {} } = useLocation();
 
   const handleClose = (event, reason) => {

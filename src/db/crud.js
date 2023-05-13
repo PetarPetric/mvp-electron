@@ -37,11 +37,11 @@ class Crud {
         CREATE TABLE IF NOT EXISTS sub_artikli (
         id INTEGER PRIMARY KEY,
         name TEXT NOT NULL,
-        artikal_id INTEGER NOT NULL,
+        parent_artikal_id INTEGER NOT NULL,
         kolicina INTEGER NOT NULL,
-        sub_artikal_id INTEGER NOT NULL,
-        FOREIGN KEY (artikal_id) REFERENCES artikli(id),
-        FOREIGN KEY (sub_artikal_id) REFERENCES artikli(id)
+        artikal_id INTEGER NOT NULL,
+        FOREIGN KEY (parent_artikal_id) REFERENCES artikli(id),
+        FOREIGN KEY (artikal_id) REFERENCES artikli(id)
         );
     ;`;
 
@@ -298,8 +298,8 @@ class Crud {
           return Promise.all(
             subArtikli.map((sastojak) =>
               this.dao.run(
-                "INSERT INTO sub_artikli (name, artikal_id, sub_artikal_id, kolicina) VALUES (?, ?, ?, ?)",
-                [sastojak.name, artikalId, sastojak.id, sastojak.kolicina]
+                "INSERT INTO sub_artikli (parent_artikal_id, artikal_id, kolicina) VALUES (?, ?, ?)",
+                [artikalId, sastojak.id, sastojak.kolicina]
               )
             )
           ).then(() => artikalId);
@@ -327,12 +327,12 @@ class Crud {
           (tipProizvodaId == 3 || tipProizvodaId == 4) &&
           subArtikli.length > 0
         ) {
-          this.dao.run(`DELETE FROM sub_artikli WHERE artikal_id = ?`, [id]);
+          this.dao.run(`DELETE FROM sub_artikli WHERE parent_artikal_id = ?`, [id]);
           Promise.all(
             subArtikli.map((sastojak) => {
               this.dao.run(
-                "INSERT INTO sub_artikli (name, artikal_id, sub_artikal_id, kolicina) VALUES (?, ?, ?, ?)",
-                [sastojak.name, id, sastojak.id, sastojak.kolicina]
+                "INSERT INTO sub_artikli (parent_artikal_id, artikal_id, kolicina) VALUES (?, ?, ?)",
+                [id, sastojak.artikal_id, sastojak.kolicina]
               );
             })
           );
@@ -344,10 +344,16 @@ class Crud {
     const artikli = await this.dao.all(`SELECT * FROM artikli WHERE id = ?`, [
       id,
     ]);
+
     const subArtikli = await this.dao.all(
-      `SELECT * FROM sub_artikli WHERE artikal_id = ?`,
+      `SELECT sub_artikli.*, artikli.name 
+        FROM sub_artikli 
+        JOIN artikli ON sub_artikli.artikal_id = artikli.id 
+        WHERE sub_artikli.parent_artikal_id = ?;
+      `,
       [id]
     );
+
     const tipProizvoda = await this.dao.all(
       `SELECT * FROM tipProizvoda WHERE id = ?`,
       [artikli[0].tipProizvoda_id]
@@ -410,7 +416,7 @@ class Crud {
   };
 
   deleteArtikal(id) {
-    this.dao.run(`DELETE FROM sub_artikli WHERE artikal_id = ?`, [id]);
+    this.dao.run(`DELETE FROM sub_artikli WHERE parent_artikal_id = ?`, [id]);
     return this.dao.run(`DELETE FROM artikli WHERE id = ?`, [id]);
   }
 
@@ -474,15 +480,14 @@ class Crud {
     return this.dao.all(
       `SELECT
         sa.id,
-        sa.name,
         sa.kolicina,
-        sa.sub_artikal_id,
+        sa.artikal_id,
         a.name AS artikal_name
       FROM
         sub_artikli sa
-        JOIN artikli a ON sa.artikal_id = a.id
+        JOIN artikli a ON sa.parent_artikal_id = a.id
       WHERE
-        sa.artikal_id = ?`,
+        sa.parent_artikal_id = ?`,
       [id]
     );
   };
@@ -500,45 +505,58 @@ class Crud {
       [narudzbina.id]
     );
 
-    for (const artikalId in groupedArticles) {
-      const articleGroup = groupedArticles[artikalId];
-      const quantity = articleGroup.length;
-
+    for (let i = 0; i < artikli.length; i++) {
       await this.dao.run(
-        `
-      DELETE FROM narudzbine_artikli
-      WHERE rowid IN (
-          SELECT rowid FROM narudzbine_artikli
-          WHERE artikal_id = ?
-          LIMIT ?
-      )
-      `,
-        [artikalId, quantity]
+        `DELETE FROM narudzbine_artikli WHERE rowid IN (
+          SELECT rowid FROM narudzbine_artikli WHERE id = ? AND artikal_id = ? AND narudzbina_id = ?
+          )`,
+        [artikli[i].narudzbina_artikal_id, artikli[i].artikal_id, artikli[i].narudzbina_id]
+      );
+      await this.dao.run(
+        "INSERT INTO naplacene_narudzbine_artikli (naplacena_narudzbina_id , artikal_id) VALUES (?, ?)",
+        [narudzbina.id, artikli[i].artikal_id]
       );
 
-      for (const artikal of articleGroup) {
-        await this.dao.run(
-          "INSERT INTO naplacene_narudzbine_artikli (naplacena_narudzbina_id , artikal_id) VALUES (?, ?)",
-          [narudzbina.id, artikal.artikal_id]
-        );
-      }
+      await this.updateKolicina(artikli[i].artikal_id, -1)
 
-      // Update the artikli table by subtracting the quantity
-      await this.updateKolicina(artikalId, -quantity);
-
-      const article = articleGroup[0];
-
-      // Update sub_artikli for articles with tipProizvoda_id as 2 or 5
-      if (article.tip_proizvoda == 3 || article.tip_proizvoda == 5) {
-        const subArtikli = await this.getSubArtikliByArtikalId(artikalId);
+      if (artikli[i].tip_proizvoda == 3 || artikli[i].tip_proizvoda == 5) {
+        const subArtikli = await this.getSubArtikliByArtikalId(artikli[i].artikal_id);
 
         for (const subArtikal of subArtikli) {
           // Subtract the sub_article quantity from the sub_artikli table
           await this.updateKolicina(
-            subArtikal.sub_artikal_id,
-            -subArtikal.kolicina * quantity
+            subArtikal.artikal_id,
+            -subArtikal.kolicina
           );
         }
+      }
+    }
+    const narudzbineNaStolu = await this.dao.all(
+      `SELECT
+        *
+      FROM
+        narudzbine
+      WHERE
+        stol_id = ?`,
+      [stolId]
+    );
+
+    for (const narudzbina of narudzbineNaStolu) {
+      const artikliNarudzbine = await this.dao.all(
+        `SELECT
+          *
+        FROM
+          narudzbine_artikli
+        WHERE
+          narudzbina_id = ?`,
+        [narudzbina.id]
+      );
+
+      if (artikliNarudzbine.length == 0) {
+        await this.dao.run(
+          `DELETE FROM narudzbine WHERE id = ?`,
+          [narudzbina.id]
+        );
       }
     }
 
@@ -594,35 +612,19 @@ class Crud {
       "SELECT * FROM storno_narudzbine WHERE id = ?",
       [storniranaNarudzbina.id]
     );
+    console.log(storniranaNarudzbina, storniranaNarudzbinainfo)
 
-    for (const artikalId in groupedArticles) {
-      const quantity = groupedArticles[artikalId].length;
-      let counter = 0;
-
-      for (const artikal of groupedArticles[artikalId]) {
-        if (counter < quantity) {
-          await this.dao.run(
-            `
-          DELETE FROM narudzbine_artikli
-          WHERE rowid = (
-              SELECT rowid FROM narudzbine_artikli
-              WHERE narudzbina_id = ? AND artikal_id = ?
-              LIMIT 1
-          )
-          `,
-            [artikal.narudzbina_id, artikal.artikal_id]
-          );
-
-          await this.dao.run(
-            `
-          INSERT INTO storno_narudzbine_artikli (storno_narudzbina_id, artikal_id) VALUES (?, ?)
-          `,
-            [storniranaNarudzbina.id, artikal.artikal_id]
-          );
-
-          counter++;
-        }
-      }
+    for (let i = 0; i < artikli.length; i++) {
+      await this.dao.run(
+        `DELETE FROM narudzbine_artikli WHERE rowid IN (
+          SELECT rowid FROM narudzbine_artikli WHERE id = ? AND artikal_id = ? AND narudzbina_id = ?
+          )`,
+        [artikli[i].narudzbina_artikal_id, artikli[i].artikal_id, artikli[i].narudzbina_id]
+      );
+      await this.dao.run(
+        "INSERT INTO storno_narudzbine_artikli (storno_narudzbina_id , artikal_id) VALUES (?, ?)",
+        [storniranaNarudzbina.id, artikli[i].artikal_id]
+      );
     }
 
     printStorno(groupedArticles, storniranaNarudzbinainfo, stolId);

@@ -61,45 +61,45 @@ export default function DodavanjeNaStoComponenta(props) {
         )}
         {!tipProizvoda
           ? props.tipoviProizvoda.map((tipProizvoda) => {
-              return (
-                <div
-                  key={tipProizvoda.id}
-                  className="tipProizvoda"
-                  onClick={() => {
-                    setTipProizvoda(tipProizvoda);
-                    db.getArtikalById(tipProizvoda.id).then((res) => {
-                      setProizvodi(res.artikli);
-                    });
-                  }}
-                >
-                  <div className="tipProizvodaTitle">
-                    <p>{tipProizvoda.name}</p>
-                  </div>
+            return (
+              <div
+                key={tipProizvoda.id}
+                className="tipProizvoda"
+                onClick={() => {
+                  setTipProizvoda(tipProizvoda);
+                  db.getArtikalById(tipProizvoda.id).then((res) => {
+                    setProizvodi(res.artikli);
+                  });
+                }}
+              >
+                <div className="tipProizvodaTitle">
+                  <p>{tipProizvoda.name}</p>
                 </div>
-              );
-            })
+              </div>
+            );
+          })
           : proizvodi.map((proizvod) => {
-              return (
-                <div
-                  onClick={() => {
-                    setPorudzbenicaList((prevState) => {
-                      const newState = [...prevState, proizvod];
-                      setGroupedPorudzbenicaList(groupBy(newState, "id"));
-                      return newState;
-                    });
-                  }}
-                  className="proizvod"
-                  key={proizvod.id}
-                >
-                  <div className="proizvodTitle">
-                    <p>{proizvod.name}</p>
-                  </div>
-                  <div className="proizvodPrice">
-                    <p>{proizvod.cena}</p>
-                  </div>
+            return (
+              <div
+                onClick={() => {
+                  setPorudzbenicaList((prevState) => {
+                    const newState = [...prevState, proizvod];
+                    setGroupedPorudzbenicaList(groupBy(newState, "id"));
+                    return newState;
+                  });
+                }}
+                className="proizvod"
+                key={proizvod.id}
+              >
+                <div className="proizvodTitle">
+                  <p>{proizvod.name}</p>
                 </div>
-              );
-            })}
+                <div className="proizvodPrice">
+                  <p>{proizvod.cena}</p>
+                </div>
+              </div>
+            );
+          })}
       </div>
       <div className="porudzbenica-container">
         <Card sx={{ margin: 2 }}>
@@ -132,14 +132,18 @@ export default function DodavanjeNaStoComponenta(props) {
           </List>
         </Card>
         <div className="porudzbenica-total">
-          <TextField
-            id="napomena"
-            label="Napomena"
-            variant="outlined"
-            onChange={(e) => {
-              setDescription(e.target.value);
-            }}
-          />
+          <div style={{display: 'flex', flexDirection: 'column'}}>
+            <label htmlFor="napomena">Napomena</label>
+            <input
+              id="napomena"
+              type={"text"}
+              style={{ height: "45px", borderRadius: "5px", border: "1px solid #ccc", padding: "5px", margin: '10px 0' }}
+              label="Napomena"
+              onChange={(e) => {
+                setDescription(e.target.value);
+              }}
+            />
+          </div>
           <div>
             <p>Ukupno: {porudzbenicaList.length} proizvoda</p>
             <Button

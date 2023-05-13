@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import Card from "@mui/material/Card";
@@ -78,7 +78,7 @@ export default function KucaniProizvodi(props) {
   };
 
   const customList = (title, items) => (
-    <Card sx={{ margin: 4 }}>
+    <Card sx={{ margin: 4, overflow: "auto" }}>
       <CardHeader
         sx={{ px: 2, py: 1 }}
         avatar={
@@ -104,7 +104,7 @@ export default function KucaniProizvodi(props) {
       <List
         sx={{
           width: 300,
-          height: 400,
+          height: 380,
           bgcolor: "background.paper",
           overflow: "auto",
         }}
@@ -174,12 +174,14 @@ export default function KucaniProizvodi(props) {
           direction="column"
           alignItems="flex-start"
           justifyContent="space-between"
-          height="100px"
+          height="150px"
         >
-          <TextField
+          <label htmlFor="napomena">Razlog storniranja</label>
+          <input
             id="napomena"
+            type={"text"}
+            style={{ height: "45px", borderRadius: "5px", border: "1px solid #ccc", padding: "5px", margin: '10px 0' }}
             label="Razlog storniranja"
-            variant="outlined"
             onChange={(e) => {
               setDescription(e.target.value);
             }}
