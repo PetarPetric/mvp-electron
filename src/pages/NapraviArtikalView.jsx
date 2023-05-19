@@ -19,6 +19,8 @@ import {
   Button,
   IconButton,
 } from "@mui/material";
+import smalltalk from "smalltalk";
+
 
 function NapraviArtikalView() {
   const [tipoviProizvoda, setTipoviProizvoda] = useState([]);
@@ -36,7 +38,6 @@ function NapraviArtikalView() {
     async function fetchData() {
       const tipProizvoda = await db.getTipProizvoda();
       setTipoviProizvoda(tipProizvoda);
-
       if (params.id) {
         const res = await db.getSingleArtikalById(params.id);
         setSastojciZaProizvod(res.subArtikli);
@@ -110,7 +111,10 @@ function NapraviArtikalView() {
           setOpen(true);
         })
         .catch((err) => {
-          alert(JSON.stringify(err));
+          smalltalk
+            .alert('Greska', JSON.stringify(err))
+            .then(() => {
+            });
         });
       return;
     }
@@ -125,7 +129,10 @@ function NapraviArtikalView() {
         setOpen(true);
       })
       .catch((err) => {
-        alert(JSON.stringify(err));
+        smalltalk
+          .alert('Greska', JSON.stringify(err))
+          .then(() => {
+          });
       });
   };
 

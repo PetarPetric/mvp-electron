@@ -1,11 +1,9 @@
-const electron = require("electron");
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
-const ipcMain = electron.ipcMain;
+const { app, BrowserWindow, ipcMain } = require('electron');
 const { PosPrinter } = require("electron-pos-printer");
 const path = require("path");
 const isDev = require("electron-is-dev");
 const fs = require("fs");
+const gotTheLock = app.requestSingleInstanceLock()
 
 let mainWindow;
 
@@ -35,7 +33,21 @@ function createWindow() {
   mainWindow.on("closed", () => (mainWindow = null));
 }
 
-app.on("ready", createWindow);
+if (!gotTheLock) {
+  app.quit()
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
+
+  // Create myWindow, load the rest of the app, etc...
+  app.on("ready", createWindow);
+}
+
 
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
@@ -64,9 +76,8 @@ ipcMain.on("printPorudzbinu", (event, arg) => {
     margin: "10px 10px 10px 10px",
     silent: true,
   })
-    .then(() => {
-      console.log(printers);
-      console.log("Printed successfully");
+    .then((res) => {
+      console.log(res)
     })
     .catch((error) => {
       console.error(error);
@@ -79,12 +90,11 @@ ipcMain.on("printRacun", (event, arg) => {
     copies: 1,
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
-    margin: "10px 10px 10px 10px",
+    margin: "10px 15px 10px 15px",
     silent: true,
   })
     .then(() => {
       console.log(printers);
-      console.log("Printed successfully");
     })
     .catch((error) => {
       console.error(error);
@@ -97,12 +107,11 @@ ipcMain.on("printStorno", (event, arg) => {
     copies: 1,
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
-    margin: "10px 10px 10px 10px",
+    margin: "10px 15px 10px 15px",
     silent: true,
   })
     .then(() => {
       console.log(printers);
-      console.log("Printed successfully");
     })
     .catch((error) => {
       console.error(error);
@@ -115,7 +124,7 @@ ipcMain.on("printDnevni", (event, arg) => {
     copies: 1,
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
-    margin: "10px 10px 10px 10px",
+    margin: "10px 15px 10px 15px",
     silent: true,
   })
     .then(() => {
