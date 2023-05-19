@@ -153,7 +153,6 @@ export default function DodavanjeNaStoComponenta(props) {
                   porudzbenicaList,
                   description
                 ).then((res) => {
-                  alert("Uspesno ste narucili proizvode!");
                   props.setActionValue(2);
                 });
               }}

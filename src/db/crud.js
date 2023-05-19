@@ -6,6 +6,7 @@ import {
   groupBy,
 } from "../services/printservice";
 import dayjs from "dayjs";
+import smalltalk from 'smalltalk';
 
 class Crud {
   constructor(dao) {
@@ -559,8 +560,14 @@ class Crud {
         );
       }
     }
+    smalltalk
+      .alert('', 'Porudzbina se stampa!')
+      .then(() => {
+        console.log('ok');
+      });
 
     printRacun(groupedArticles, narudzbinaInfo, stolId);
+
   };
 
   napraviPorudzbinu = async (stolId, artikli, description) => {
@@ -583,6 +590,11 @@ class Crud {
 
     try {
       await Promise.all(promises);
+      smalltalk
+        .alert('', 'Porudzbina se stampa!')
+        .then(() => {
+          console.log('ok');
+        });
 
       printPorudzbinu(artikli, narudzbinaInfo, stolId);
 
@@ -771,7 +783,11 @@ class Crud {
     );
 
     if (narudzbineArtikli.length) {
-      alert("Nisu naplaceni svi stolovi!");
+      smalltalk
+        .alert('Greska', 'Nisu naplaceni svi stolovi!')
+        .then(() => {
+          console.log('ok');
+        });
       return;
     }
 
@@ -817,7 +833,6 @@ class Crud {
         `,
       [startDateFormated, endDateFormated]
     );
-    alert("Dnevni izvestaj se stampa");
 
     printDnevni(naplaceneNarudzbine, storniraneNarudzbine);
   };
