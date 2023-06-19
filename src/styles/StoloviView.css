@@ -1,60 +1,671 @@
+body {
+  height: 100vh;
+}
+
 .lokal {
-  width: 60%;
+  width: 100%;
   height: 100%;
   margin: auto;
   position: relative;
 }
+
 .lokal-unutra {
+  width: 100%;
+  height: 100%;
+  margin: auto;
   position: relative;
-  padding: 2rem;
-  display: grid;
-  height: 300px;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
-  border-right: 2px solid black;
 }
 
-.lokal-unutra::after {
+.lokal-basta {
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  position: relative;
+}
+
+.toalet-slika {
+  width: 33%;
+  height: 400px;
+}
+
+.pt1 {
+  background-color: #eee;
+  background-size: 60px 60px;
+  background-position: 0 0, 30px 30px;
+  background-image: -webkit-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2), -webkit-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2);
+  background-image: -moz-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2), -moz-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2);
+  background-image: -ms-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2), -ms-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2);
+  background-image: -o-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2), -o-linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2);
+  background-image: linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2), linear-gradient(45deg, #1976d2 25%, transparent 25%, transparent 75%, #1976d2 75%, #1976d2);
+}
+
+.container {
+  width: 100%;
+  height: 100px;
+  background-color: #539A46;
+  position: fixed;
+  bottom: 0;
+}
+
+.container .line {
+  width: 100%;
+  height: 100px;
+  border: 3px solid #ffffff;
   position: absolute;
-  bottom: -3px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0px;
+  right: 0px;
+  top: 0px;
+  bottom: 0px;
+}
+
+.container .line::before {
+  border: 5px solid #539A46;
+  bottom: -6px;
   content: "";
-  background: #fff;
-  width: 100px;
-  height: 5px;
-}
-
-.sank {
-  height: 8rem;
-  border-bottom: 2px solid black;
-  border-left: 2px solid black;
-  border-right: 2px solid black;
-  position: relative;
-}
-
-.sank-pizza {
+  left: -9px;
   position: absolute;
-  right: 10px;
+  right: -6px;
+  top: -9px;
+}
+
+.container .half {
+  width: 50%;
+  height: 100px;
+  position: absolute;
+  top: 0px;
+  border-right-color: #fff;
+  border-right-style: solid;
+  border-right-width: 4px;
+  left: 0px;
+  z-index: 200;
+}
+
+
+.container .p-spot.left::after {
+  content: "\2022";
+  position: absolute;
+  color: #fff;
+  font-size: 35px;
+  top: 238px;
+  left: 80px;
+  z-index: 300;
+}
+
+.container .p-spot.right::after {
+  content: "\2022";
+  position: absolute;
+  color: #fff;
+  font-size: 35px;
+  top: 238px;
+  right: 80px;
+  z-index: 300;
+}
+
+.container .center {
+  position: absolute;
+  width: 130px;
+  height: 130px;
+  border: 3px solid #ffffff;
+  left: 45.24%;
+  top: 193px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+
+.container .center::after {
+  background-color: #fff;
+  border: 5px solid #fff;
+  bottom: 55px;
+  content: "";
+  left: 55px;
+  position: absolute;
+  right: 55px;
+  top: 55px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+
+.container .p-place.left {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  height: 130px;
+  position: absolute;
+  width: 150px;
+  z-index: 210;
+  border: 3px solid transparent;
+  border-bottom-color: #fff;
+  border-right-color: #fff;
+  border-top-color: #fff;
+  left: 0;
+  top: 193px;
+}
+
+.container .p-place.right {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  height: 130px;
+  position: absolute;
+  width: 150px;
+  z-index: 210;
+  border: 3px solid transparent;
+  border-bottom-color: #fff;
+  border-left-color: #fff;
+  border-top-color: #fff;
+  right: 0px;
+  top: 193px;
+}
+
+.footbalField {
+  width: 100%;
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  flex-direction: row-reverse;
+  bottom: 150px;
+}
+
+
+.sank-slika {
+  width: 100px;
+  height: 250px;
+  position: absolute;
+  background-color: #5e4837;
+  top: 70px;
+  left: 38%;
+  display: flex;
+  align-items: center;
+}
+
+.sank-cut {
+  width: 60%;
+  height: 70%;
+  background-color: white;
+}
+
+@keyframes animate-container {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.swim-pool-container {
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  width: 60%;
+  height: 30%;
+  border: 15px solid #e9ebea;
+  z-index: 2;
+  background-color: #8ac6e2;
+  animation: animate-container 0.2s forwards;
+  opacity: 0;
+}
+
+.swim-pool-container-left {
+  height: 100%;
+  width: 10%;
+  position: absolute;
+  top: 0;
+  z-index: 5;
+  background: #35afdc;
+  background-size: 50% 50%;
+  background-repeat: no-repeat;
+  animation: animate-container 1s forwards;
+  opacity: 0;
+}
+
+.swim-pool-container-right {
+  width: 100%;
+  height: 20%;
+  background-color: #dbdad8;
+  transform-origin: bottom;
+  z-index: 5;
+  background: #35afdc;
+  background-size: 50% 50%;
+  background-repeat: no-repeat;
+  animation: animate-container 1s forwards;
+  opacity: 0;
+}
+
+.tyre {
+  border: 10px solid #e0a9b5;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  position: absolute;
+  box-shadow: 1px 1px 2px #147dbd,
+    -1px -1px 2px #147dbd;
+  animation: animate-container 1s forwards;
+  opacity: 0;
+}
+
+.tyre2 {
+  left: 20%;
+  top: 30%;
+}
+
+.tyre1 {
+  left: 50%;
+  top: 50%;
+}
+
+.stairs {
+  z-index: 20;
+  left: -5%;
+  position: absolute;
+  width: 20%;
+  height: 20%;
+  position: absolute;
+  border: 3px solid #ababab;
+  border-left: none;
+  border-right: none;
+  display: flex;
+  justify-content: space-evenly;
+  animation: animate-container 1s forwards;
+  opacity: 0;
+}
+
+.stairs div {
+  width: 2px;
+  height: 100%;
+  background-color: #ababab;
+}
+
+.table-3 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
+  top: 180px;
+  right: 50px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-4 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
+  top: 90px;
+  right: 50px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-5 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
   top: 10px;
-  width: 50px;
-  height: 50px;
+  right: 140px;
+  height: 48px;
+  width: 48px;
 }
 
-.sank:after {
+.table-6 {
+  /* CSS styles for table with ID 11 */
   position: absolute;
-  bottom: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-  content: "";
-  background: #fff;
-  width: 100px;
-  height: 5px;
+  top: 10px;
+  right: 280px;
+  height: 48px;
+  width: 48px;
 }
 
-.lokal-unutra > div:nth-child(even) {
-  justify-self: right;
+.table-7 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
+  top: 110px;
+  right: 250px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-8 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
+  top: 210px;
+  right: 250px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-9 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
+  top: 310px;
+  left: 856px;
+}
+
+.table-10 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
+  top: 270px;
+  right: 50px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-11 {
+  /* CSS styles for table with ID 11 */
+  position: absolute;
+  top: 546px;
+  left: 856px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-12 {
+  /* CSS styles for table with ID 12 */
+  position: absolute;
+  top: 410px;
+  left: 756px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-13 {
+  /* CSS styles for table with ID 13 */
+  position: absolute;
+  top: 536px;
+  left: 10px;
+}
+
+.table-14 {
+  /* CSS styles for table with ID 14 */
+  position: absolute;
+  top: 546px;
+  left: 456px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-15 {
+  /* CSS styles for table with ID 15 */
+  position: absolute;
+  top: 546px;
+  left: 656px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-16 {
+  /* CSS styles for table with ID 16 */
+  position: absolute;
+  top: 410px;
+  left: 556px;
+  height: 48px;
+  width: 48px;
+}
+
+.table-17 {
+  /* CSS styles for table with ID 17 */
+  position: absolute;
+  top: 410px;
+  left: 10px;
+}
+
+.table-24 {
+  /* CSS styles for table with ID 24 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-25 {
+  /* CSS styles for table with ID 25 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-26 {
+  /* CSS styles for table with ID 26 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-27 {
+  /* CSS styles for table with ID 27 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-28 {
+  /* CSS styles for table with ID 28 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-29 {
+  /* CSS styles for table with ID 29 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-30 {
+  /* CSS styles for table with ID 30 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-31 {
+  /* CSS styles for table with ID 31 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-32 {
+  /* CSS styles for table with ID 32 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-33 {
+  /* CSS styles for table with ID 33 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-34 {
+  /* CSS styles for table with ID 34 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-35 {
+  /* CSS styles for table with ID 35 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-36 {
+  /* CSS styles for table with ID 36 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-37 {
+  /* CSS styles for table with ID 37 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-38 {
+  /* CSS styles for table with ID 38 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-39 {
+  /* CSS styles for table with ID 39 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-40 {
+  /* CSS styles for table with ID 40 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-41 {
+  /* CSS styles for table with ID 41 */
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+}
+
+.table-71 {
+  /* CSS styles for table with ID 71 */
+  position: absolute;
+  top: 410px;
+  left: 226px;
+}
+
+.table-58 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 62%;
+  left: 12%;
+}
+
+.table-55 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 62%;
+  left: 24%;
+}
+
+.table-56 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 62%;
+  left: 36%;
+}
+
+.table-57 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 62%;
+  left: 48%;
+}
+
+.table-66 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 62%;
+  left: 60%;
+}
+
+.table-69 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 20%;
+  left: 16%;
+  width: 68px;
+  height: 68px;
+}
+
+
+.table-59 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 20%;
+  left: 28%;
+  width: 68px;
+  height: 68px;
+}
+
+.table-70 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 20%;
+  left: 40%;
+  width: 68px;
+  height: 68px;
+}
+
+.table-72 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 20%;
+  left: 56%;
+  width: 68px;
+  height: 68px;
+}
+
+.table-62 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 8%;
+  left: 16%;
+  width: 68px;
+  height: 68px;
+}
+
+.table-68 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 8%;
+  left: 28%;
+  width: 68px;
+  height: 68px;
+}
+
+.table-67 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 8%;
+  left: 40%;
+  width: 68px;
+  height: 68px;
+}
+
+.table-63 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 8%;
+  left: 56%;
+  width: 68px;
+  height: 68px;
+}
+
+.table-61 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 31%;
+  left: 73%;
+}
+
+.table-65 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 48%;
+  left: 73%;
+}
+
+.table-64 {
+  /* CSS styles for table with ID 58 */
+  position: absolute;
+  top: 40%;
+  left: 83%;
 }

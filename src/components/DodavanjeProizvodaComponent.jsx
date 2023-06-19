@@ -11,7 +11,6 @@ import {
   ListItem,
   CardHeader,
   ListItemText,
-  TextField,
 } from "@mui/material";
 
 export default function DodavanjeNaStoComponenta(props) {
@@ -54,9 +53,7 @@ export default function DodavanjeNaStoComponenta(props) {
             }}
             style={{ color: "red", border: "1px solid red" }}
           >
-            <div className="tipProizvodaTitle">
-              <p>NAZAD</p>
-            </div>
+            NAZAD
           </div>
         )}
         {!tipProizvoda
@@ -72,9 +69,7 @@ export default function DodavanjeNaStoComponenta(props) {
                   });
                 }}
               >
-                <div className="tipProizvodaTitle">
-                  <p>{tipProizvoda.name}</p>
-                </div>
+                {tipProizvoda.name}
               </div>
             );
           })
@@ -92,10 +87,10 @@ export default function DodavanjeNaStoComponenta(props) {
                 key={proizvod.id}
               >
                 <div className="proizvodTitle">
-                  <p>{proizvod.name}</p>
+                  {proizvod.name}
                 </div>
                 <div className="proizvodPrice">
-                  <p>{proizvod.cena}</p>
+                  {proizvod.cena}
                 </div>
               </div>
             );
@@ -132,7 +127,7 @@ export default function DodavanjeNaStoComponenta(props) {
           </List>
         </Card>
         <div className="porudzbenica-total">
-          <div style={{display: 'flex', flexDirection: 'column'}}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <label htmlFor="napomena">Napomena</label>
             <input
               id="napomena"

@@ -13,19 +13,35 @@ export default function PasswordDialog(props) {
   const { state = {} } = useLocation();
 
   const handleNext = () => {
-    if (password == "0407") {
+    if (password == "0107") {
       props.setOpenModal(false);
       if (props.type == "dnevni-izvestaj") {
         db.getDnevniIzvestaj().then(() => {
           props.setOpen(false);
         });
-      } else if (props.type == "izvestaji") {
+      } else if (props.type == "presek-stanja") {
+        db.getPresekStanja().then(() => {
+          props.setOpen(false);
+        });
+        props.setOpen(false);
+      }
+      else if (props.type == "izvestaji") {
         navigate("/izvestaji");
         props.setOpen(false);
       } else if (props.type == "sto-izvestaj") {
         navigate("/izvestaji", { state: { table: state.table } });
       }
     } else {
+    }
+  };
+
+  const modalTitle = () => {
+    if (props.type == "dnevni-izvestaj") {
+      return "Dnevni izvestaj";
+    } else if (props.type == "izvestaji") {
+      return "Izvestaji";
+    } else if (props.type == "presek-stanja") {
+      return "Presek stanja";
     }
   };
 
@@ -37,7 +53,7 @@ export default function PasswordDialog(props) {
           props.setOpenModal(false);
         }}
       >
-        <DialogTitle>Izvestaji</DialogTitle>
+        <DialogTitle>{modalTitle()}</DialogTitle>
         <DialogContent>
           <input
             id="password"

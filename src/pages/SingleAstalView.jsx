@@ -43,7 +43,7 @@ function SingleAstal() {
   };
 
   const handleBackClick = () => {
-    navigate("/");
+    navigate(`/${state.table.view_id}`);
   };
 
   useEffect(() => {

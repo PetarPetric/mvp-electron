@@ -17,11 +17,13 @@ function createWindow() {
       enableRemoteModule: true,
     },
   });
+
   mainWindow.loadURL(
     isDev
       ? "http://localhost:3000"
       : `file://${path.join(__dirname, "../build/index.html")}`
   );
+
   if (isDev) {
     // Open the DevTools.
     //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
@@ -71,6 +73,7 @@ ipcMain.on("printPorudzbinu", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
+    preview: true,
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 10px 10px 10px",
@@ -88,6 +91,7 @@ ipcMain.on("printRacun", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
+    preview: true,
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 15px 10px 15px",
@@ -105,6 +109,7 @@ ipcMain.on("printStorno", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
+    preview: true,
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 15px 10px 15px",
@@ -122,6 +127,8 @@ ipcMain.on("printDnevni", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
+    preview: true,
+
     printerName: "POS-58 11.3.0.1",
     pageSize: "58mm",
     margin: "10px 15px 10px 15px",
@@ -153,14 +160,14 @@ ipcMain.handle("get-db-path", async () => {
     }
 
     // Copy the bundled database file to the user data directory if it doesn't exist there already
-    const bundledDbPath = path.join(process.resourcesPath, "db", "database.sqlite3");
-    const userDbPath = path.join(dbPath, "database.sqlite3");
+    const bundledDbPath = path.join(process.resourcesPath, "db", "sc-aleksandar.sqlite3");
+    const userDbPath = path.join(dbPath, "sc-aleksandar.sqlite3");
 
     if (!fs.existsSync(userDbPath)) {
       fs.copyFileSync(bundledDbPath, userDbPath);
     }
   }
 
-  return path.join(dbPath, "database.sqlite3");
+  return path.join(dbPath, "sc-aleksandar.sqlite3");
 });
 

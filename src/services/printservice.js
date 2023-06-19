@@ -210,14 +210,14 @@ function printStorno(groupedArticles, narudzbinaInfo, stolId) {
   ipcRenderer.send("printStorno", JSON.stringify(data));
 }
 
-function printDnevni(naplacenePorudzbine, stornoPorudzbine) {
+function printDnevni(naplacenePorudzbine, stornoPorudzbine, presek = null) {
   const groupedNaplacene = groupBy(naplacenePorudzbine, "artikal_id");
   const groupedStorno = groupBy(stornoPorudzbine, "artikal_id");
 
   const data = [
     {
       type: "text",
-      value: "Dnevni izvestaj",
+      value: `${presek ? 'Presek stanja' : 'Dnevni izvestaj'}`,
       style: {
         fontWeight: "600",
         textAlign: "center",

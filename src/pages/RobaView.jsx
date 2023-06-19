@@ -106,7 +106,7 @@ function RobaView() {
   };
 
   return (
-    <>
+    <div>
       <Dialog
         onClose={() => {
           setOpen(false);
@@ -153,14 +153,6 @@ function RobaView() {
       <div style={styles.dugmici}>
         <Button
           variant="contained"
-          onClick={() => {
-            navigate("/dodavanje-proizvoda");
-          }}
-        >
-          Dodaj robu na stanje
-        </Button>
-        <Button
-          variant="outlined"
           onClick={() => {
             navigate("/napravi-artikal");
           }}
@@ -258,16 +250,15 @@ function RobaView() {
           </TableFooter>
         </Table>
       </Paper>
-    </>
+    </div>
   );
 }
 
 const styles = {
   dugmici: {
-    width: "50%",
     margin: "auto",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
     paddingTop: "1rem",
   },
   tabelaRobe: {

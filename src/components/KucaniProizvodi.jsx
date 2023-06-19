@@ -64,7 +64,7 @@ export default function KucaniProizvodi(props) {
           <li key={narudzbina.date}>
             <ul>
               <ListSubheader>
-                Vreme: {dayjs(narudzbina.date).format("MMM DD hh:mm")}
+                Vreme: {dayjs(narudzbina.date).format("MMM DD HH:mm")}
               </ListSubheader>
               {Object.keys(narudzbina.items).map((key, index) => (
                 <ListItem key={index}>

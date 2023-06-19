@@ -153,9 +153,9 @@ function RobaView() {
             <ArrowBackIcon />
           </IconButton>
           <Typography variant="h6">
-            {state?.table
-              ? `Istorija stola ${state.table.title}`
-              : "Ulazni izvestaj"}
+            {
+              `Istorija stola ${state.table.title}`
+            }
           </Typography>
         </Toolbar>
       </AppBar>
@@ -218,20 +218,20 @@ function RobaView() {
           <TableBody>
             {!state?.table
               ? artikliToShow.map((artikal) => (
-                  <TableRow key={artikal.id}>
-                    <TableCell align="center">{artikal.name}</TableCell>
-                    <TableCell align="center">{artikal.kolicina}</TableCell>
-                    <TableCell align="center">
-                      <b>{dayjs(artikal.date).format("DD MMM YYYY HH:mm ")}</b>
-                    </TableCell>
-                    <TableCell align="center">
-                      {artikal.tip_proizvoda_name}
-                    </TableCell>
-                  </TableRow>
-                ))
+                <TableRow key={artikal.id}>
+                  <TableCell align="center">{artikal.name}</TableCell>
+                  <TableCell align="center">{artikal.kolicina}</TableCell>
+                  <TableCell align="center">
+                    <b>{dayjs(artikal.date).format("DD MMM YYYY HH:mm ")}</b>
+                  </TableCell>
+                  <TableCell align="center">
+                    {artikal.tip_proizvoda_name}
+                  </TableCell>
+                </TableRow>
+              ))
               : artikliToShow.map((artikal) => (
-                  <Row key={artikal.created_at} row={artikal} />
-                ))}
+                <Row key={artikal.created_at} row={artikal} />
+              ))}
           </TableBody>
           <TableFooter>
             <TableRow>

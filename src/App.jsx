@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { setDatabase } from "./services/dataservice";
 import { Outlet, useNavigate } from "react-router-dom";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -16,6 +16,8 @@ import {
 } from "@mui/material";
 
 import "../src/styles/App.css";
+
+
 setDatabase();
 
 const App = ({ children }) => {
@@ -27,6 +29,10 @@ const App = ({ children }) => {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    navigate("/1");
+  }, []);
 
 
   return (
@@ -47,6 +53,7 @@ const App = ({ children }) => {
           </IconButton>
         </Toolbar>
       </AppBar>
+
       <Drawer
         anchor="left"
         variant="persistent"
@@ -65,7 +72,7 @@ const App = ({ children }) => {
             </ListItemButton>
             <ListItemButton
               onClick={() => {
-                navigate("/");
+                navigate("/1");
                 setOpen(false);
               }}
             >
@@ -81,19 +88,20 @@ const App = ({ children }) => {
             </ListItemButton>
             <ListItemButton
               onClick={() => {
-                setLocation("izvestaji");
-                setPasswordDialogOpen(true);
-              }}
-            >
-              <ListItemText secondary="Izvestaji" />
-            </ListItemButton>
-            <ListItemButton
-              onClick={() => {
                 setLocation("dnevni-izvestaj");
                 setPasswordDialogOpen(true);
               }}
             >
               <ListItemText secondary="Dnevni Izvestaj" />
+            </ListItemButton>
+
+            <ListItemButton
+              onClick={() => {
+                setLocation("presek-stanja");
+                setPasswordDialogOpen(true);
+              }}
+            >
+              <ListItemText secondary="Presek Stanja" />
             </ListItemButton>
           </List>
         </div>

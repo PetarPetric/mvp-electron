@@ -12,14 +12,11 @@ export default function SingleAstalView(props) {
           state: { table: props.table },
         })
       }
-      className={`astal ${
-        props.table.description === "dostava" && "astal-dostava"
-      } ${props.table.description === "sank" && "astal-sank"} ${
-        props.table.description === "napolje" && "astal-napolje"
-      }`}
+      className={`table table-${
+        props.table.id} ${props.table.cena ? "table-occupied" : ""}`}
     >
       <p>{props.table.title}</p>
-      {props.table.cena ? <p>{props.table.cena}</p> : null}
+      {props.table.cena ? <p className="table-bill">{props.table.cena}</p> : null}
     </div>
   );
 }
