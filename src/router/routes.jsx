@@ -5,6 +5,7 @@ import RobaView from "../pages/RobaView";
 import ErrorView from "../pages/ErrorPage";
 import IzvestajiView from "../pages/IzvestajiView";
 import NapraviArtikalView from "../pages/NapraviArtikalView";
+import StanjeView from "../pages/StanjeView";
 import App from "../App";
 
 const routes = createBrowserRouter([
@@ -32,6 +33,10 @@ const routes = createBrowserRouter([
       {
         path: "/izmena-artikla/:id",
         element: <NapraviArtikalView />,
+      },
+      {
+        path: "/stanje",
+        element: <StanjeView />
       },
       {
         path: "/izvestaji",

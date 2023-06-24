@@ -228,7 +228,8 @@ export default function NaplatiKomponenta(props) {
               </Button>
               <Button
                 variant="contained"
-                onClick={(e) => {
+                onClick={(event) => {
+                  event.currentTarget.disabled = true;
                   db.naplatiPorudzbinu(
                     state.table.id,
                     ukupnaCena,

@@ -387,10 +387,11 @@ class Crud {
     const narudzbineNaStolu = await this.dao.all(
       `SELECT
       *
-      FROM
-    narudzbine
-    WHERE
-    stol_id = ? `,
+        FROM
+      narudzbine
+        WHERE
+      stol_id = ? 
+      `,
       [stolId]
     );
 
@@ -399,9 +400,10 @@ class Crud {
         `SELECT
       *
       FROM
-    narudzbine_artikli
-    WHERE
-    narudzbina_id = ? `,
+        narudzbine_artikli
+        WHERE
+        narudzbina_id = ? 
+        `,
         [narudzbina.id]
       );
 
@@ -621,6 +623,72 @@ class Crud {
       count: totalCount[0].count,
     };
   };
+
+  getStanje = async () => {
+    const naplaceneNarudzbine = await this.dao.all(
+      `
+        SELECT
+        a.name,
+          a.cena,
+          a.id as artikal_id,
+          a.tipProizvoda_id as tip_proizvoda,
+          'Naplaceno' as status
+        FROM
+              naplacene_narudzbine_artikli na
+              JOIN artikli a ON na.artikal_id = a.id
+              JOIN naplacene_narudzbine nn ON na.naplacena_narudzbina_id = nn.id
+        `
+    );
+
+    const storniraneNarudzbine = await this.dao.all(
+      `
+        SELECT
+        a.name,
+          a.cena,
+          a.id as artikal_id,
+          a.tipProizvoda_id as tip_proizvoda,
+          'Stornirano' as status
+        FROM
+          storno_narudzbine_artikli na
+          JOIN artikli a ON na.artikal_id = a.id
+          JOIN storno_narudzbine sn ON na.storno_narudzbina_id = sn.id`
+    );
+
+    const groupedNaplacene = groupBy(naplaceneNarudzbine, "artikal_id");
+    const groupedStorno = groupBy(storniraneNarudzbine, "artikal_id");
+    const ukupnaCenaNaplacene = await this.dao.all(
+      `
+      SELECT
+      SUM(a.cena) as ukupna_cena
+      FROM
+            naplacene_narudzbine_artikli na
+            JOIN artikli a ON na.artikal_id = a.id
+            JOIN naplacene_narudzbine nn ON na.naplacena_narudzbina_id = nn.id
+      `
+    )
+    const ukupnoStorno = await this.dao.all(
+      `
+      SELECT
+      SUM(a.cena) as ukupna_cena
+      FROM
+            storno_narudzbine_artikli na
+            JOIN artikli a ON na.artikal_id = a.id
+            JOIN storno_narudzbine sn ON na.storno_narudzbina_id = sn.id
+      `
+    )
+
+    return {
+      naplaceno: {
+        artikli: groupedNaplacene,
+        ukupnaCena: ukupnaCenaNaplacene[0].ukupna_cena,
+      },
+      stornirano: {
+        artikli: groupedStorno,
+        ukupnaCena: ukupnoStorno[0].ukupna_cena,
+      },
+    };
+  };
+
 
   getPresekStanja = async () => {
     // get all naplaceni artikli and all storno artikli for today with dayjs

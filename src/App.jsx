@@ -103,6 +103,13 @@ const App = ({ children }) => {
             >
               <ListItemText secondary="Presek Stanja" />
             </ListItemButton>
+            <ListItemButton
+              onClick={() => {
+                navigate("/stanje");
+              }}
+            >
+              <ListItemText secondary="Stanje" />
+            </ListItemButton>
           </List>
         </div>
       </Drawer>

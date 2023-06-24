@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { db } from "../services/dataservice";
 import { Button, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
@@ -18,6 +17,7 @@ export default function DodavanjeNaStoComponenta(props) {
   const [proizvodi, setProizvodi] = useState([]);
   const [porudzbenicaList, setPorudzbenicaList] = useState([]);
   const [groupedPorudzbenicaList, setGroupedPorudzbenicaList] = useState({});
+  const [disableButton, setDisableButton] = useState(false);
   const [description, setDescription] = useState("");
   const { state } = useLocation();
 
@@ -41,6 +41,7 @@ export default function DodavanjeNaStoComponenta(props) {
       )
     );
   };
+
   return (
     <div className="dodavanje-proizvoda-container">
       <div className="articles-list">
@@ -142,7 +143,8 @@ export default function DodavanjeNaStoComponenta(props) {
           <div>
             <p>Ukupno: {porudzbenicaList.length} proizvoda</p>
             <Button
-              onClick={() => {
+              onClick={(event) => {
+                event.currentTarget.disabled = true;
                 db.napraviPorudzbinu(
                   state.table.id,
                   porudzbenicaList,
@@ -152,7 +154,7 @@ export default function DodavanjeNaStoComponenta(props) {
                 });
               }}
               variant="contained"
-              disabled={!porudzbenicaList.length}
+              disabled={!porudzbenicaList.length || disableButton}
             >
               NARUCI
             </Button>

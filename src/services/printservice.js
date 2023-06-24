@@ -28,7 +28,7 @@ function printRacun(groupedArticles, narudzbinaInfo, stolId) {
         "DD MMM YYYY HH:mm"
       )}`,
       style: {
-        fontWeight: "600",
+        fontWeight: "500",
         textAlign: "left",
         fontSize: "14px",
         marginBottom: "5px",
@@ -47,9 +47,8 @@ function printRacun(groupedArticles, narudzbinaInfo, stolId) {
     ...Object.keys(groupedArticles).map((key) => {
       return {
         type: "text",
-        value: `${groupedArticles[key].length} x ${
-          groupedArticles[key][0].name
-        } - ${groupedArticles[key][0].cena * groupedArticles[key].length}`,
+        value: `${groupedArticles[key].length} x ${groupedArticles[key][0].name
+          } - ${groupedArticles[key][0].cena * groupedArticles[key].length}`,
         style: {
           fontWeight: "500",
           textAlign: "left",
@@ -62,10 +61,20 @@ function printRacun(groupedArticles, narudzbinaInfo, stolId) {
       type: "text",
       value: "Cena ukupno: " + narudzbinaInfo[0].ukupna_cena + " din",
       style: {
-        fontWeight: "600",
+        fontWeight: "500",
         textAlign: "left",
         fontSize: "16px",
         marginBottom: "5px",
+      },
+    },
+    {
+      type: "text",
+      value: "KRAJ",
+      style: {
+        fontWeight: "500",
+        textAlign: "left",
+        fontSize: "16px",
+        marginTop: "20px",
       },
     },
   ];
@@ -112,9 +121,8 @@ function printPorudzbinu(artikli, narudzbinaInfo, stolId) {
     ...Object.keys(groupedArticles).map((key) => {
       return {
         type: "text",
-        value: `${groupedArticles[key].length} x ${
-          groupedArticles[key][0].name
-        } - ${groupedArticles[key][0].cena * groupedArticles[key].length}`,
+        value: `${groupedArticles[key].length} x ${groupedArticles[key][0].name
+          } - ${groupedArticles[key][0].cena * groupedArticles[key].length}`,
         style: {
           fontWeight: "500",
           textAlign: "left",
@@ -141,7 +149,17 @@ function printPorudzbinu(artikli, narudzbinaInfo, stolId) {
         fontWeight: "600",
         textAlign: "left",
         fontSize: "16px",
-        marginBottom: "5px",
+        marginBottom: "10px",
+      },
+    },
+    {
+      type: "text",
+      value: "KRAJ",
+      style: {
+        fontWeight: "500",
+        textAlign: "left",
+        fontSize: "16px",
+        marginTop: "20px",
       },
     },
   ];
@@ -185,9 +203,8 @@ function printStorno(groupedArticles, narudzbinaInfo, stolId) {
     ...Object.keys(groupedArticles).map((key) => {
       return {
         type: "text",
-        value: `${groupedArticles[key].length} x ${
-          groupedArticles[key][0].name
-        } - ${groupedArticles[key][0].cena * groupedArticles[key].length}`,
+        value: `${groupedArticles[key].length} x ${groupedArticles[key][0].name
+          } - ${groupedArticles[key][0].cena * groupedArticles[key].length}`,
         style: {
           fontWeight: "500",
           textAlign: "left",
@@ -206,6 +223,16 @@ function printStorno(groupedArticles, narudzbinaInfo, stolId) {
         marginBottom: "5px",
       },
     },
+    {
+      type: "text",
+      value: "KRAJ",
+      style: {
+        fontWeight: "500",
+        textAlign: "left",
+        fontSize: "16px",
+        marginTop: "20px",
+      },
+    },
   ];
   ipcRenderer.send("printStorno", JSON.stringify(data));
 }
@@ -220,7 +247,7 @@ function printDnevni(naplacenePorudzbine, stornoPorudzbine, presek = null) {
       value: `${presek ? 'Presek stanja' : 'Dnevni izvestaj'}`,
       style: {
         fontWeight: "600",
-        textAlign: "center",
+        textAlign: "left",
         fontSize: "16px",
         marginBottom: "5px",
       },
@@ -248,9 +275,8 @@ function printDnevni(naplacenePorudzbine, stornoPorudzbine, presek = null) {
     ...Object.keys(groupedNaplacene).map((key) => {
       return {
         type: "text",
-        value: `${groupedNaplacene[key].length} x ${
-          groupedNaplacene[key][0].name
-        } - ${groupedNaplacene[key][0].cena * groupedNaplacene[key].length}`,
+        value: `${groupedNaplacene[key].length} x ${groupedNaplacene[key][0].name
+          } - ${groupedNaplacene[key][0].cena * groupedNaplacene[key].length}`,
         style: {
           fontWeight: "500",
           textAlign: "left",
@@ -266,7 +292,7 @@ function printDnevni(naplacenePorudzbine, stornoPorudzbine, presek = null) {
         naplacenePorudzbine.reduce((acc, curr) => acc + curr.cena, 0) +
         " RSD",
       style: {
-        fontWeight: "600",
+        fontWeight: "400",
         textAlign: "left",
         fontSize: "16px",
         marginBottom: "10px",
@@ -285,9 +311,8 @@ function printDnevni(naplacenePorudzbine, stornoPorudzbine, presek = null) {
     ...Object.keys(groupedStorno).map((key) => {
       return {
         type: "text",
-        value: `${groupedStorno[key].length} x ${
-          groupedStorno[key][0].name
-        } - ${groupedStorno[key][0].cena * groupedStorno[key].length}`,
+        value: `${groupedStorno[key].length} x ${groupedStorno[key][0].name
+          } - ${groupedStorno[key][0].cena * groupedStorno[key].length}`,
         style: {
           fontWeight: "500",
           textAlign: "left",
@@ -303,10 +328,20 @@ function printDnevni(naplacenePorudzbine, stornoPorudzbine, presek = null) {
         stornoPorudzbine.reduce((acc, curr) => acc + curr.cena, 0) +
         " RSD",
       style: {
-        fontWeight: "600",
+        fontWeight: "400",
         textAlign: "left",
         fontSize: "16px",
         marginBottom: "10px",
+      },
+    },
+    {
+      type: "text",
+      value: "KRAJ",
+      style: {
+        fontWeight: "500",
+        textAlign: "left",
+        fontSize: "16px",
+        marginTop: "20px",
       },
     },
   ];

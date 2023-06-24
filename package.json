@@ -1,9 +1,9 @@
 {
-  "name": "mvp-electron",
+  "name": "aleksandar-electron",
   "version": "0.1.0",
   "private": true,
-  "author": "MVP",
-  "description": "MVP Electron",
+  "author": "aleksandar",
+  "description": "SC-aleksandar",
   "homepage": "./",
   "main": "public/electron.js",
   "dependencies": {
@@ -44,8 +44,8 @@
     "dist": "electron-builder -w"
   },
   "build": {
-    "appId": "com.mvp.app",
-    "productName": "MVPizzeria",
+    "appId": "com.aleksandar.app",
+    "productName": "aleksandar",
     "directories": {
       "buildResources": "assets"
     },

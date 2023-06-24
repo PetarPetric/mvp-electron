@@ -197,7 +197,7 @@ function RobaView() {
                 <TableCell align="center">{artikal.id}</TableCell>
                 <TableCell align="center">{artikal.name}</TableCell>
                 <TableCell align="center">
-                  {artikal.tipProizvoda_id == 3 ? "Jelo" : artikal.kolicina}
+                  {artikal.kolicina}
                 </TableCell>
                 <TableCell align="center">
                   {artikal.cena || "Artikal nema cenu"}

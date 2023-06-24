@@ -64,17 +64,6 @@ export default function StoloviView() {
               <SingleAstal key={table.id} table={table} />
             ))}
           </div>
-          <div className="container">
-            <div className="line"></div>
-            <div className="half"></div>
-            <div className="panelty left"></div>
-            <div className="panelty right"></div>
-            <div className="p-spot left">&nbsp;</div>
-            <div className="p-spot right">&nbsp;</div>
-            <div className="center"></div>
-            <div className="p-place left"></div>
-            <div className="p-place right"></div>
-          </div>
         </div> :
           <div className="lokal-basta">
             {tables.map((table) => (
