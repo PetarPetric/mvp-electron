@@ -61,20 +61,15 @@ app.on("activate", () => {
   }
 });
 
-function getDefaultPrinterName(webContents) {
-  const printers = webContents.getPrinters();
-  const defaultPrinter = printers.find((printer) => printer.isDefault);
-  return defaultPrinter ? defaultPrinter.name : null;
-}
-
 ipcMain.on("printPorudzbinu", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
-    printerName: "POS-58 11.3.0.1",
+    printerName: "POS-58",
     pageSize: "58mm",
-    margin: "10px 10px 10px 10px",
+    margin: "15px 30px 20px 10px",
     silent: true,
+    pageSize: { height: 301000, width: 71000 }  // page size
   })
     .then((res) => {
       console.log(res)
@@ -88,10 +83,11 @@ ipcMain.on("printRacun", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
-    printerName: "POS-58 11.3.0.1",
+    printerName: "POS-58",
     pageSize: "58mm",
-    margin: "10px 15px 10px 15px",
+    margin: "15px 30px 20px 10px",
     silent: true,
+    pageSize: { height: 301000, width: 71000 }  // page size
   })
     .then(() => {
       console.log(printers);
@@ -105,10 +101,11 @@ ipcMain.on("printStorno", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
-    printerName: "POS-58 11.3.0.1",
+    printerName: "POS-58",
     pageSize: "58mm",
-    margin: "10px 15px 10px 15px",
+    margin: "15px 30px 20px 10px",
     silent: true,
+    pageSize: { height: 301000, width: 71000 }  // page size
   })
     .then(() => {
       console.log(printers);
@@ -122,10 +119,11 @@ ipcMain.on("printDnevni", (event, arg) => {
   const data = JSON.parse(arg);
   PosPrinter.print(data, {
     copies: 1,
-    printerName: "POS-58 11.3.0.1",
+    printerName: "POS-58",
     pageSize: "58mm",
-    margin: "10px 15px 10px 15px",
+    margin: "15px 40px 20px 0",
     silent: true,
+    pageSize: { height: 301000, width: 71000 }  // page size
   })
     .then(() => {
       console.log(printers);
