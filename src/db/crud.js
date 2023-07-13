@@ -133,10 +133,23 @@ class Crud {
           (2, '2', 'unutra'),
           (3, '3', 'unutra'),
           (4, '4', 'unutra'),
-          (5, 'Dostava', 'dostava'),
-          (6, 'Sank', 'sank'),
-          (7, '5', 'napolje'),
-          (8, '6', 'napolje');
+          (5, '5', 'unutra'),
+          (6, '6', 'unutra'),
+          (7, '7', 'unutra'),
+          (8, '8', 'unutra'),
+          (9, '9', 'unutra'),
+          (10, '10', 'unutra'),
+          (10, '10', 'napolje'),
+          (11, '11', 'napolje'),
+          (12, '12', 'napolje'),
+          (13, '13', 'napolje'),
+          (14, '14', 'napolje'),
+          (15, '15', 'napolje'),
+          (16, '16', 'napolje'),
+          (17, '17', 'napolje'),
+          (18, '18', 'napolje'),
+          (19, 'Sank', 'sank'),
+          (20, 'Kuhinja', 'kuhinja');
     `;
 
     const SET_TIP_PROIZVODA = `
