@@ -188,7 +188,8 @@ export default function KucaniProizvodi(props) {
           />
           <Button
             variant="contained"
-            onClick={(e) => {
+            onClick={(event) => {
+              event.currentTarget.disabled = true;
               db.stornirajPorudzbinu(state.table.id, right, description).then(
                 () => {
                   props.setActionValue(2);

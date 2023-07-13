@@ -147,7 +147,8 @@ export default function DodavanjeNaStoComponenta(props) {
           <div>
             <p>Ukupno: {porudzbenicaList.length} proizvoda</p>
             <Button
-              onClick={() => {
+              onClick={(event) => {
+                event.currentTarget.disabled = true;
                 db.napraviPorudzbinu(
                   state.table.id,
                   porudzbenicaList,
