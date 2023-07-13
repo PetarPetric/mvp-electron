@@ -1,14 +1,16 @@
 .lokal {
-  width: 60%;
+  width: 100%;
   height: 100%;
-  margin: auto;
   position: relative;
 }
+
 .lokal-unutra {
   position: relative;
+  margin-left: auto;
   padding: 2rem;
   display: grid;
-  height: 300px;
+  height: 600px;
+  width: 65%;
   grid-template-columns: 1fr 1fr;
   grid-column-gap: 20px;
   grid-row-gap: 20px;
@@ -20,7 +22,7 @@
 .lokal-unutra::after {
   position: absolute;
   bottom: -3px;
-  left: 50%;
+  left: 30%;
   transform: translateX(-50%);
   content: "";
   background: #fff;
@@ -29,32 +31,170 @@
 }
 
 .sank {
-  height: 8rem;
+  position: absolute;
+  height: 120px;
+  width: 250px;
+  top: 0;
+  left: 0;
   border-bottom: 2px solid black;
-  border-left: 2px solid black;
   border-right: 2px solid black;
-  position: relative;
 }
 
-.sank-pizza {
+.kuhinja {
   position: absolute;
-  right: 10px;
-  top: 10px;
-  width: 50px;
-  height: 50px;
+  height: 160px;
+  width: 400px;
+  bottom: 0;
+  right: 0;
+  border-top: 2px solid black;
+  border-left: 2px solid black;
+  z-index: 0;
 }
 
-.sank:after {
+.table-1 {
   position: absolute;
-  bottom: -3px;
-  left: 50%;
-  transform: translateX(-50%);
-  content: "";
-  background: #fff;
-  width: 100px;
-  height: 5px;
+  top: 125px;
+  left: 70px;
 }
 
-.lokal-unutra > div:nth-child(even) {
-  justify-self: right;
+
+.table-2 {
+  position: absolute;
+  top: 280px;
+  left: 2px;
+}
+
+.table-3 {
+  position: absolute;
+  top: 280px;
+  left: 100px;
+}
+
+.table-4 {
+  position: absolute;
+  left: 2px;
+  width: 192px;
+  bottom: 20px;
+}
+
+.table-5 {
+  position: absolute;
+  right: 420px;
+  bottom: 20px;
+  height: 170px;
+  bottom: 20px;
+}
+
+.table-6 {
+  position: absolute;
+  right: 420px;
+  height: 170px;
+  top: 140px;
+}
+
+.table-7 {
+  position: absolute;
+  right: 250px;
+  top: 60px;
+  transform: rotate(45deg);
+}
+
+.table-7 p {
+  transform: rotate(-45deg);
+}
+
+.table-8 {
+  position: absolute;
+  right: 250px;
+  top: 260px;
+  transform: rotate(45deg);
+}
+
+.table-8 p {
+  transform: rotate(-45deg);
+}
+
+.table-9 {
+  position: absolute;
+  right: 0;
+  top: 60px;
+}
+
+.table-10 {
+  position: absolute;
+  right: 0;
+  top: 260px;
+}
+
+.table-11 {
+  position: absolute;
+  top: 70px;
+  left: -133px;
+  width: 130px;
+}
+
+.table-12 {
+  position: absolute;
+  top: 190px;
+  left: -133px;
+  width: 130px;
+}
+
+.table-13 {
+  position: absolute;
+  top: 310px;
+  left: -133px;
+  width: 130px;
+}
+
+.table-14 {
+  position: absolute;
+  top: 430px;
+  left: -133px;
+  width: 130px;
+}
+
+.table-15 {
+  position: absolute;
+  top: 70px;
+  left: -430px;
+  width: 130px;
+}
+
+.table-16 {
+  position: absolute;
+  top: 190px;
+  left: -430px;
+  width: 130px;
+}
+
+.table-17 {
+  position: absolute;
+  top: 310px;
+  left: -430px;
+  width: 130px;
+}
+
+.table-18 {
+  position: absolute;
+  top: 430px;
+  left: -430px;
+  width: 130px;
+}
+
+.table-19 {
+  position: absolute;
+  height: 80px;
+  width: 80px;
+  top: 20px;
+  left: 80px;
+}
+
+.table-20 {
+  position: absolute;
+  height: 80px;
+  width: 80px;
+  bottom: 30px;
+  right: 150px;
+  z-index: 2;
 }

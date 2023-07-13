@@ -1,4 +1,4 @@
-.astal {
+.table {
   width: 6rem;
   height: 6rem;
   display: flex;
@@ -7,33 +7,28 @@
   align-items: center;
   justify-items: center;
   border: 1px solid black;
+  border-radius: 4px;
+  overflow: visible;
+  position: relative;
 }
 
-.astal > p {
+.table > p {
   font-weight: bold;
   text-align: center;
   margin: 8px 0;
 }
-.astal:hover {
+.table:hover {
   cursor: pointer;
   background-color: gray;
   opacity: 0.9;
+  transition: 0.2s;
 }
 
-.astal-dostava {
-  position: absolute;
-  top: -7rem;
-  right: -8rem;
+.table-occupied {
+  background-color: rgba(255, 76, 48, 1);
 }
 
-.astal-sank {
+.table-bill {
   position: absolute;
-  top: -7rem;
-  left: 1rem;
-}
-
-.astal-napolje {
-  position: absolute;
-  bottom: -7rem;
-  margin: 0 2rem;
+  top: 50%;
 }
