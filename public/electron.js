@@ -90,7 +90,7 @@ ipcMain.on("printRacun", (event, arg) => {
     pageSize: { height: 301000, width: 71000 }  // page size
   })
     .then(() => {
-      console.log(printers);
+      console.log("Printed successfully");
     })
     .catch((error) => {
       console.error(error);
@@ -108,7 +108,7 @@ ipcMain.on("printStorno", (event, arg) => {
     pageSize: { height: 301000, width: 71000 }  // page size
   })
     .then(() => {
-      console.log(printers);
+      console.log("Printed successfully");
     })
     .catch((error) => {
       console.error(error);
@@ -126,7 +126,6 @@ ipcMain.on("printDnevni", (event, arg) => {
     pageSize: { height: 301000, width: 71000 }  // page size
   })
     .then(() => {
-      console.log(printers);
       console.log("Printed successfully");
     })
     .catch((error) => {
